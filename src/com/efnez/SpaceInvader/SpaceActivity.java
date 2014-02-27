@@ -1,7 +1,12 @@
 package com.efnez.SpaceInvader;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.*;
+import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ImageView;
 
 /**
@@ -9,24 +14,34 @@ import android.widget.ImageView;
  * User: Dany
  */
 public class SpaceActivity extends Activity {
-    private ImageView invaderOne;
-    private ImageView invaderThree;
-    private ImageView invaderTwo;
+    private GLSurfaceView mGLView;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.space_activity);
-        showInvaders();
+
+        // Create a GLSurfaceView instance and set it
+        // as the ContentView for this Activity.
+        mGLView = new MyGLSurfaceView(this);
+        setContentView(mGLView);
     }
 
-    public void showInvaders() {
-        invaderOne = (ImageView) findViewById(R.id.imageView);
-        invaderTwo = (ImageView) findViewById(R.id.imageView1);
-        invaderThree = (ImageView) findViewById(R.id.imageView2);
+    @Override
+    protected void onPause() {
+        // The following call pauses the rendering thread.
+        // If your OpenGL application is memory intensive,
+        // you should consider de-allocating objects that
+        // consume significant memory here.
+        super.onPause();
+        mGLView.onPause();
+    }
 
-        invaderOne.setImageResource(R.drawable.invader1);
-        invaderTwo.setImageResource(R.drawable.invader2);
-        invaderThree.setImageResource(R.drawable.invader3);
-
+    @Override
+    protected void onResume() {
+        // The following call resumes a paused rendering thread.
+        // If you de-allocated graphic objects for onPause()
+        // this is a good place to re-allocate them.
+        super.onResume();
+        mGLView.onResume();
     }
 }
