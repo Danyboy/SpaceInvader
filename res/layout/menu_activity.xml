@@ -1,26 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent"
         >
-    <RelativeLayout
+    <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-        <ImageView
-                android:layout_width="80dp"
-                android:layout_height="87dp"
-                android:id="@+id/imageView" android:layout_gravity="center" android:contentDescription="SpaceInvader"
-                android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
-                android:layout_marginTop="38dp"/>
-        <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Start"
-                android:id="@+id/startBattle" android:layout_gravity="center_horizontal|bottom"
-                android:onClick="startBattle"
-                android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
-                android:layout_marginTop="240dp"/>
-    </RelativeLayout>
-</GridLayout>
+            android:layout_height="fill_parent" android:layout_alignParentLeft="true" android:layout_marginLeft="0dp"
+            android:layout_alignParentTop="true" android:layout_marginTop="0dp">
+        <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+            <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="87dp"
+                    android:id="@+id/imageView" android:layout_gravity="center" android:contentDescription="SpaceInvader"
+                    android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
+                    android:layout_marginTop="38dp"/>
+            <Button
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start"
+                    android:id="@+id/startBattle" android:layout_gravity="center_horizontal|bottom"
+                    android:onClick="startBattle"
+                    android:layout_centerHorizontal="true" android:layout_alignParentTop="true"
+                    android:layout_marginTop="240dp"/>
+        </RelativeLayout>
+    </TableRow>
+</RelativeLayout>
 

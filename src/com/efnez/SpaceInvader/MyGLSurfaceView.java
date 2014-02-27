@@ -40,8 +40,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
     }
 
     private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+    private final float MY_TOUCH_FACTOR = 0.8f;
     private float mPreviousX;
-    private float mPreviousY;
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -50,34 +50,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
         // interested in events where the touch position changed.
 
         float x = e.getX();
-        float y = e.getY();
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
 
-                float dx = x - mPreviousX;
-                float dy = y - mPreviousY;
-
-                // reverse direction of rotation above the mid-line
-                if (y > getHeight() / 2) {
-                    dx = dx * -1 ;
-                }
-
-                // reverse direction of rotation to left of the mid-line
-                if (x < getWidth() / 2) {
-                    dy = dy * -1 ;
-                }
-
-                mRenderer.setxPosition(1f);
-
-//                mRenderer.setAngle(
-//                        mRenderer.getAngle() +
-//                        ((dx + dy) * TOUCH_SCALE_FACTOR));  // = 180.0f / 320
+                float center = getWidth() / 2;
+                mRenderer.setxPosition( ((x - center) / center) * MY_TOUCH_FACTOR );
                 requestRender();
         }
-
-        mPreviousX = x;
-        mPreviousY = y;
         return true;
     }
 
