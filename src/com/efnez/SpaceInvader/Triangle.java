@@ -36,7 +36,7 @@ public class Triangle {
             0.3f, -0.311004243f, 0.0f // bottom right
     };
 
-    float color[] = { 0.63671875f, 0.76953125f, 0.22265625f, 0.0f };
+    float color[] = { 0.23671875f, 0.76953125f, 0.12265625f, 0.0f };
 
     /**
      * Sets up the drawing object data for use in an OpenGL ES context.

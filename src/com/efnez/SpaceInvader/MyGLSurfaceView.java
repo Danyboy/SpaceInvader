@@ -38,10 +38,8 @@ public class MyGLSurfaceView extends GLSurfaceView {
         // Render the view only when there is a change in the drawing data
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
-
-    private final float TOUCH_SCALE_FACTOR = 180.0f / 320;
+        // Experimental compute for this shape and point of view
     private final float MY_TOUCH_FACTOR = 0.8f;
-    private float mPreviousX;
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -53,8 +51,14 @@ public class MyGLSurfaceView extends GLSurfaceView {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-
-                float center = getWidth() / 2;
+                float center;
+                if ( getResources().getConfiguration().ORIENTATION_PORTRAIT
+                        == getResources().getConfiguration().orientation ){
+                    center = getWidth() / 2;
+                } else {
+                    center = getHeight() / 2;
+                }
+// TODO: remove this hack, now changes camera center position, but must changes shape position
                 mRenderer.setxPosition( ((x - center) / center) * MY_TOUCH_FACTOR );
                 requestRender();
         }
