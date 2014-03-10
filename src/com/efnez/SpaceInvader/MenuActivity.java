@@ -26,7 +26,7 @@ public class MenuActivity extends Activity {
 
     public void showMenu() {
         image = (ImageView) findViewById(R.id.imageView);
-        image.setImageResource(R.drawable.space_invader);
+        image.setImageResource(R.drawable.green_triangle);
         intent = new Intent(this, SpaceActivity.class);
 
         button = (Button) findViewById(R.id.startBattle);
