@@ -5,6 +5,8 @@ import android.graphics.*;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Created by Dany on 11.03.14.
  */
@@ -15,8 +17,13 @@ public class MyBitmapView extends View {
 
     public MyBitmapView(Context context) {
         super(context);
-        setPosition(getHeight() / 2, getWidth() / 2);
+        setPosition(getHeight() / 2, getWidth() / 2); //FIX doesnt work
     }
+
+//    @Override
+//    protected void onFinishInflate(){
+//
+//    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -35,7 +42,44 @@ public class MyBitmapView extends View {
         triangle = BitmapFactory.decodeResource(getResources(), R.drawable.green_triangle);
 
         canvas.drawBitmap(triangle, x, y, paint);
+
+        if (bullets == null){
+//                || bullets.isEmpty()){
+            createBullets();
+        }
+
+        changeBulletPosition(canvas, paint);
+        
     }
+
+    ConcurrentHashMap<Integer, Bullet> bullets;
+    int number = 10;
+
+    public void createBullets(){
+        bullets = new ConcurrentHashMap<Integer, Bullet>();
+        for (int i = 0; i < number; i++) {
+            bullets.put(i, new Bullet(x, y));
+        }
+    }
+    
+    public void changeBulletPosition(Canvas canvas, Paint paint){
+        if (bullets != null && !bullets.isEmpty()){
+            Bullet bullet;
+            for (int i = 0; i < number; i++) {
+                bullet = bullets.get(i);
+                canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
+                bullet.y -= 5;
+                if (bullet.y < 0){
+                    bullets.remove(i);
+                    number--;     //TODO FIX to two var
+                }
+            }
+        } else {
+            createBullets();
+        }
+    }
+
+
 
     void setPosition(float x, float y){
         this.x = x - (119 - 1) / 2; // Image centering // TODO with Bitmap.getWidth()
@@ -54,5 +98,16 @@ public class MyBitmapView extends View {
             invalidate();
         }
         return true;
+    }
+
+    private class Bullet {
+        public float x, y;
+        public Bitmap bullet = BitmapFactory.decodeResource(getResources(), R.drawable.green_triangle_23x12);
+        public int ttl;
+
+        public Bullet(float x, float y) {
+            this.x = x;
+            this.y = y;
+        }
     }
 }
