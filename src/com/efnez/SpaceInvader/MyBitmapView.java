@@ -17,13 +17,12 @@ public class MyBitmapView extends View {
 
     public MyBitmapView(Context context) {
         super(context);
-        setPosition(getHeight() / 2, getWidth() / 2); //FIX doesnt work
     }
 
-//    @Override
-//    protected void onFinishInflate(){
-//
-//    }
+    @Override
+    protected void onFinishInflate(){
+        setPosition(getHeight() / 2, getWidth() / 2); //FIX doesnt work
+    }
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -43,35 +42,36 @@ public class MyBitmapView extends View {
 
         canvas.drawBitmap(triangle, x, y, paint);
 
-        if (bullets == null){
-//                || bullets.isEmpty()){
+        if (bullets == null || bullets.isEmpty()) {
             createBullets();
         }
 
         changeBulletPosition(canvas, paint);
-        
+
     }
 
     ConcurrentHashMap<Integer, Bullet> bullets;
     int number = 10;
 
-    public void createBullets(){
+    public void createBullets() {
         bullets = new ConcurrentHashMap<Integer, Bullet>();
         for (int i = 0; i < number; i++) {
             bullets.put(i, new Bullet(x, y));
         }
     }
-    
-    public void changeBulletPosition(Canvas canvas, Paint paint){
-        if (bullets != null && !bullets.isEmpty()){
+
+    public void changeBulletPosition(Canvas canvas, Paint paint) {
+        if (bullets != null && !bullets.isEmpty()) {
             Bullet bullet;
             for (int i = 0; i < number; i++) {
                 bullet = bullets.get(i);
-                canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
-                bullet.y -= 5;
-                if (bullet.y < 0){
-                    bullets.remove(i);
-                    number--;     //TODO FIX to two var
+                if (bullet != null) {
+                    canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
+                    bullet.y -= 5;
+                    if (bullet.y < 0) {
+                        bullets.remove(i);
+//                        number--;     //TODO FIX to two var
+                    }
                 }
             }
         } else {
@@ -80,8 +80,7 @@ public class MyBitmapView extends View {
     }
 
 
-
-    void setPosition(float x, float y){
+    void setPosition(float x, float y) {
         this.x = x - (119 - 1) / 2; // Image centering // TODO with Bitmap.getWidth()
         this.y = y - 120;
     }
@@ -95,7 +94,7 @@ public class MyBitmapView extends View {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-            invalidate();
+                invalidate();
         }
         return true;
     }
