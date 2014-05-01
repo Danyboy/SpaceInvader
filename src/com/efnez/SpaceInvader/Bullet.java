@@ -16,14 +16,4 @@ public class Bullet extends Triangle <Float> {
     }
 }
 
-class Triangle <T>{
-    public T x, y;
-
-    public Triangle(T x, T y) {
-        this.x = x;
-        this.y = y;
-    }
-
-}
-
 

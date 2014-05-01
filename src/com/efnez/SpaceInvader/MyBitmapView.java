@@ -17,10 +17,13 @@ public class MyBitmapView extends View {
     private float x;
     private float y;
     public static Resources resources;
+    private Render render;
+//    private Canvas canvas;
 
     public MyBitmapView(Context context) {
         super(context);
         resources = getResources();
+        render = new MySpaceRender(this);
     }
 
     @Override
@@ -31,9 +34,11 @@ public class MyBitmapView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+//        this.canvas = canvas;
 
-        Render render = new MySpaceRender(this, canvas);
         render.repaint(canvas);
+
+//        render.repaint(canvas);
 
 //        changeBulletPosition(canvas, paint);
 
