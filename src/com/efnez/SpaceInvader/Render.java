@@ -8,4 +8,5 @@ import android.graphics.Canvas;
 public interface Render {
     public void init();
     public void repaint(Canvas canvas);
+//    public void setCanvas(Canvas canvas);
 }

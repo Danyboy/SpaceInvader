@@ -17,13 +17,14 @@ public class MyBitmapView extends View {
     private float x;
     private float y;
     public static Resources resources;
-    private Render render;
+    private MySpaceRender render;
 //    private Canvas canvas;
 
     public MyBitmapView(Context context) {
         super(context);
         resources = getResources();
         render = new MySpaceRender(this);
+//        thread.start();
     }
 
     @Override
@@ -34,14 +35,9 @@ public class MyBitmapView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+//        render.setCanvas(canvas);
 //        this.canvas = canvas;
-
         render.repaint(canvas);
-
-//        render.repaint(canvas);
-
-//        changeBulletPosition(canvas, paint);
-
     }
 
     @Override
@@ -66,5 +62,22 @@ public class MyBitmapView extends View {
     public Pair<Float, Float> getPosition(){
         return new Pair<Float, Float>(x, y);
     }
+
+    Thread thread = new Thread(){
+    @Override
+    public void run() {
+        boolean isRunning = true;
+
+        try {
+            while (isRunning) {
+//                repaint();
+                invalidate();
+                Thread.sleep(12000L / 60); //fps
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    };
 
 }
