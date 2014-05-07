@@ -7,6 +7,8 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -18,25 +20,28 @@ public class MyBitmapView extends View {
     private float y;
     public static Resources resources;
     private MySpaceRender render;
+    Timer gameLoop;
+
+    TimerTask timerTask;
+
 //    private Canvas canvas;
 
     public MyBitmapView(Context context) {
         super(context);
         resources = getResources();
         render = new MySpaceRender(this);
-//        thread.start();
+
+//        gameLoop = new Timer("Game loop");
     }
 
     @Override
     protected void onFinishInflate(){
-        setPosition(getHeight() / 2, getWidth() / 2); //FIX doesnt work
+        setPosition(getHeight() / 2, getWidth() / 2); //TODO FIX doesnt work
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-//        render.setCanvas(canvas);
-//        this.canvas = canvas;
         render.repaint(canvas);
     }
 
@@ -49,7 +54,7 @@ public class MyBitmapView extends View {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-                invalidate();
+//                invalidate();
         }
         return true;
     }
@@ -62,22 +67,5 @@ public class MyBitmapView extends View {
     public Pair<Float, Float> getPosition(){
         return new Pair<Float, Float>(x, y);
     }
-
-    Thread thread = new Thread(){
-    @Override
-    public void run() {
-        boolean isRunning = true;
-
-        try {
-            while (isRunning) {
-//                repaint();
-                invalidate();
-                Thread.sleep(12000L / 60); //fps
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    };
 
 }

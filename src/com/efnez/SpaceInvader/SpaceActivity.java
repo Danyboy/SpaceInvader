@@ -2,8 +2,12 @@ package com.efnez.SpaceInvader;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created with IntelliJ IDEA.
@@ -19,11 +23,38 @@ public class SpaceActivity extends Activity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        // Create a GLSurfaceView instance and set it
+        // Create a instance and set it
         // as the ContentView for this Activity.
         myBitmapView = new MyBitmapView(this);
         setContentView(myBitmapView);
+        gameLoop();
     }
+
+
+    private TimerTask gameTask(){
+        TimerTask timerTask = new TimerTask() {
+            int i;
+
+            @Override
+            public void run() {
+                SpaceActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        i++;
+                        myBitmapView.invalidate();
+                    }
+                });
+            }
+        };
+
+        return timerTask;
+    }
+
+    private void gameLoop(){
+        Handler handler = new Handler();
+        new Timer().schedule(gameTask(), 1000L / 60); //TODO change to fps
+    }
+
 
 //    @Override
 //    protected void onPause() {
