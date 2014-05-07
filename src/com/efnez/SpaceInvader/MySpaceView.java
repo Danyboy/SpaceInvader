@@ -7,26 +7,21 @@ import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * Created by Dany on 11.03.14.
  */
-public class MyBitmapView extends View {
+public class MySpaceView extends View {
 
     private float x;
     private float y;
     public static Resources resources;
     private MySpaceRender render;
-    Timer gameLoop;
 
-    TimerTask timerTask;
+    public final static float triangleCenter = (119 - 1) / 2;
 
 //    private Canvas canvas;
 
-    public MyBitmapView(Context context) {
+    public MySpaceView(Context context) {
         super(context);
         resources = getResources();
         render = new MySpaceRender(this);
@@ -60,7 +55,7 @@ public class MyBitmapView extends View {
     }
 
     void setPosition(float x, float y) {
-        this.x = x - (119 - 1) / 2; // Triangle image centering // TODO refactor with Bitmap.getWidth()
+        this.x = x - triangleCenter; // Triangle image centering // TODO refactor with Bitmap.getWidth()
         this.y = y - 120;
     }
 

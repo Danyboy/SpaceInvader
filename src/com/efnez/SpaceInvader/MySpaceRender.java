@@ -7,20 +7,20 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Created by Dany on 02.05.14.
  */
-public class MySpaceRender extends Thread implements Render {
+public class MySpaceRender extends Thread {
 
     private float x;
     private float y;
 
     private Paint paint;
-    private MyBitmapView view;
+    private MySpaceView view;
     private Bitmap triangle;
 //    private Canvas canvas;
 
     private ConcurrentHashMap<Integer, Bullet> objects;
     int number = 10;
 
-    public MySpaceRender(MyBitmapView view) {
+    public MySpaceRender(MySpaceView view) {
         this.view = view;
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -30,15 +30,14 @@ public class MySpaceRender extends Thread implements Render {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
 //        TODO get res without view
-        triangle = BitmapFactory.decodeResource(MyBitmapView.resources, R.drawable.green_triangle);
-
+        InvaderShip invaderShip = new InvaderShip(0, 0);
+        triangle = InvaderShip.getBitmap();
     }
-
 
     public void init() { //create new objects
         objects = new ConcurrentHashMap<Integer, Bullet>();
         for (int i = 0; i < number; i++) {
-            objects.put(i, new Bullet(x, y));
+            objects.put(i, new Bullet(x + MySpaceView.triangleCenter, y));
         }
     }
 
@@ -60,7 +59,7 @@ public class MySpaceRender extends Thread implements Render {
             bullet = objects.get(i);
             if (bullet != null) {
 
-                canvas.drawBitmap(bullet.bullet, bullet.x, bullet.y, paint);
+                canvas.drawBitmap(bullet.bitmap, bullet.x - bullet.getTriangleCenter(), bullet.y, paint);
 
                 bullet.y -= 5;
                 if (bullet.y < 0) {
@@ -70,8 +69,4 @@ public class MySpaceRender extends Thread implements Render {
             }
         }
     }
-
-//    public void setCanvas(Canvas canvas) {
-//        this.canvas = canvas;
-//    }
 }

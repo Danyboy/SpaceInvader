@@ -6,15 +6,14 @@ import android.os.Handler;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * Created with IntelliJ IDEA.
  * User: Dany
  */
 public class SpaceActivity extends Activity {
-    private MyBitmapView myBitmapView;
+    private MySpaceView mySpaceView;
+    Handler handler = new Handler();
+    long fps = 60;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -25,34 +24,22 @@ public class SpaceActivity extends Activity {
 
         // Create a instance and set it
         // as the ContentView for this Activity.
-        myBitmapView = new MyBitmapView(this);
-        setContentView(myBitmapView);
+        mySpaceView = new MySpaceView(this);
+        setContentView(mySpaceView);
         gameLoop();
     }
 
+    private void gameLoop(){
 
-    private TimerTask gameTask(){
-        TimerTask timerTask = new TimerTask() {
-            int i;
-
+        Runnable loop = new Runnable() {
             @Override
             public void run() {
-                SpaceActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        i++;
-                        myBitmapView.invalidate();
-                    }
-                });
+                mySpaceView.invalidate();
+                handler.postDelayed(this, 1000 / fps);
             }
         };
 
-        return timerTask;
-    }
-
-    private void gameLoop(){
-        Handler handler = new Handler();
-        new Timer().schedule(gameTask(), 1000L / 60); //TODO change to fps
+        handler.postDelayed(loop, 1000 / fps);
     }
 
 
@@ -63,7 +50,7 @@ public class SpaceActivity extends Activity {
 //        // you should consider de-allocating objects that
 //        // consume significant memory here.
 //        super.onPause();
-//        myBitmapView.onPause();
+//        mySpaceView.onPause();
 //    }
 //
 //    @Override
@@ -72,6 +59,6 @@ public class SpaceActivity extends Activity {
 //        // If you de-allocated graphic objects for onPause()
 //        // this is a good place to re-allocate them.
 //        super.onResume();
-//        myBitmapView.onResume();
+//        mySpaceView.onResume();
 //    }
 }
