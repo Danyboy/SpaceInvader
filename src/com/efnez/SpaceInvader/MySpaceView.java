@@ -15,7 +15,7 @@ public class MySpaceView extends View {
     private float x;
     private float y;
     public static Resources resources;
-    private MySpaceRender render;
+    public MySpaceRender render;
 
     public final static float triangleCenter = (119 - 1) / 2;
 
@@ -49,6 +49,7 @@ public class MySpaceView extends View {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
+//                render.addBullet();
 //                invalidate();
         }
         return true;

@@ -17,8 +17,8 @@ public class MySpaceRender extends Thread {
     private Bitmap triangle;
 //    private Canvas canvas;
 
-    private ConcurrentHashMap<Integer, Bullet> objects;
-    int number = 10;
+    private ConcurrentHashMap<Integer, Bullet> bullets;
+    int number = 0;
 
     public MySpaceRender(MySpaceView view) {
         this.view = view;
@@ -29,16 +29,15 @@ public class MySpaceRender extends Thread {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
 
-//        TODO get res without view
-        InvaderShip invaderShip = new InvaderShip(0, 0);
-        triangle = InvaderShip.getBitmap();
+        GreenTriangleShip greenTriangleShip = new GreenTriangleShip(0, 0);
+        triangle = greenTriangleShip.getBitmap();
+        bullets = new ConcurrentHashMap<Integer, Bullet>();
     }
 
-    public void init() { //create new objects
-        objects = new ConcurrentHashMap<Integer, Bullet>();
-        for (int i = 0; i < number; i++) {
-            objects.put(i, new Bullet(x + MySpaceView.triangleCenter, y));
-        }
+    public void addBullet() {
+//        for (int i = 0; i < number; i++) {
+            bullets.put(number++, new Bullet(x + MySpaceView.triangleCenter, y));
+//        }
     }
 
     public void repaint(Canvas canvas) {
@@ -50,23 +49,19 @@ public class MySpaceRender extends Thread {
         y = view.getPosition().second;
         canvas.drawBitmap(triangle, x, y, paint);
 
-        if (objects == null || objects.isEmpty()) {
-            init();
+        if (bullets == null || bullets.isEmpty()) {
+            addBullet();
         }
 
-        Bullet bullet;
-        for (int i = 0; i < number; i++) {
-            bullet = objects.get(i);
+        for (Bullet bullet : bullets.values()) {
             if (bullet != null) {
-
                 canvas.drawBitmap(bullet.bitmap, bullet.x - bullet.getTriangleCenter(), bullet.y, paint);
-
                 bullet.y -= 5;
                 if (bullet.y < 0) {
-                    objects.remove(i);
-//                        number--;     //TODO FIX to two var
+                    bullets.remove(bullet);
                 }
             }
+
         }
     }
 }

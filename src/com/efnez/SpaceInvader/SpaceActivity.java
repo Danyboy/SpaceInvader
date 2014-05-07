@@ -13,7 +13,9 @@ import android.view.WindowManager;
 public class SpaceActivity extends Activity {
     private MySpaceView mySpaceView;
     Handler handler = new Handler();
-    long fps = 60;
+    long fps = 60 * 2; //Wait in two times longer
+    long ttl = 300L;
+    long last = System.currentTimeMillis();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,10 +33,16 @@ public class SpaceActivity extends Activity {
 
     private void gameLoop(){
 
+
         Runnable loop = new Runnable() {
             @Override
             public void run() {
                 mySpaceView.invalidate();
+                long now = System.currentTimeMillis();
+                if (now - last > ttl){
+                    last = now;
+                    mySpaceView.render.addBullet();
+                }
                 handler.postDelayed(this, 1000 / fps);
             }
         };
