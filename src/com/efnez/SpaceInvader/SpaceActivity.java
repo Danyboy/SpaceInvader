@@ -12,10 +12,11 @@ import android.view.WindowManager;
  */
 public class SpaceActivity extends Activity {
     private MySpaceView mySpaceView;
-    Handler handler = new Handler();
+    private Handler handler = new Handler();
     long fps = 60 * 2; //Wait in two times longer
     long ttl = 300L;
     long last = System.currentTimeMillis();
+    private boolean isPlaying = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -32,8 +33,6 @@ public class SpaceActivity extends Activity {
     }
 
     private void gameLoop(){
-
-
         Runnable loop = new Runnable() {
             @Override
             public void run() {
@@ -43,30 +42,32 @@ public class SpaceActivity extends Activity {
                     last = now;
                     mySpaceView.render.addBullet();
                 }
-                handler.postDelayed(this, 1000 / fps);
+
+                while (isPlaying){
+                    handler.postDelayed(this, 1000 / fps);
+                }
             }
         };
 
         handler.postDelayed(loop, 1000 / fps);
     }
 
+    @Override
+    protected void onPause() {
+        // The following call pauses the rendering thread.
+        // If your OpenGL application is memory intensive,
+        // you should consider de-allocating objects that
+        // consume significant memory here.
+        super.onPause();
+        isPlaying = false;
+    }
 
-//    @Override
-//    protected void onPause() {
-//        // The following call pauses the rendering thread.
-//        // If your OpenGL application is memory intensive,
-//        // you should consider de-allocating objects that
-//        // consume significant memory here.
-//        super.onPause();
-//        mySpaceView.onPause();
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        // The following call resumes a paused rendering thread.
-//        // If you de-allocated graphic objects for onPause()
-//        // this is a good place to re-allocate them.
-//        super.onResume();
-//        mySpaceView.onResume();
-//    }
+    @Override
+    protected void onResume() {
+        // The following call resumes a paused rendering thread.
+        // If you de-allocated graphic objects for onPause()
+        // this is a good place to re-allocate them.
+        super.onResume();
+        isPlaying = true;
+    }
 }

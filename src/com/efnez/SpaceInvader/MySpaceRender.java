@@ -1,13 +1,14 @@
 package com.efnez.SpaceInvader;
 
+import android.content.Context;
 import android.graphics.*;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Created by Dany on 02.05.14.
+ * Created by Dany on 02.05.14
  */
-public class MySpaceRender extends Thread {
+public class MySpaceRender {
 
     private float x;
     private float y;
@@ -18,7 +19,7 @@ public class MySpaceRender extends Thread {
 //    private Canvas canvas;
 
     private ConcurrentHashMap<Integer, Bullet> bullets;
-    int number = 0;
+    int bulletQuantity = 0;
 
     public MySpaceRender(MySpaceView view) {
         this.view = view;
@@ -35,19 +36,18 @@ public class MySpaceRender extends Thread {
     }
 
     public void addBullet() {
-//        for (int i = 0; i < number; i++) {
-            bullets.put(number++, new Bullet(x + MySpaceView.triangleCenter, y));
-//        }
+            bullets.put(bulletQuantity++, new Bullet(x + MySpaceView.triangleCenter, y));
     }
 
     public void repaint(Canvas canvas) {
 //        TODO dont repaint font
         canvas.drawPaint(paint);
 
-//      TODO rewrite with View.getX or with interface getPair
+//      TODO rewrite with interface View.getX or with interface getPair
         x = view.getPosition().first;
         y = view.getPosition().second;
         canvas.drawBitmap(triangle, x, y, paint);
+        drawTriangle(canvas);
 
         if (bullets == null || bullets.isEmpty()) {
             addBullet();
@@ -61,7 +61,29 @@ public class MySpaceRender extends Thread {
                     bullets.remove(bullet);
                 }
             }
-
         }
+    }
+
+    private void drawTriangle(Canvas canvas){
+        paint.setColor(android.graphics.Color.BLACK);
+        canvas.drawPaint(paint);
+
+        paint.setStrokeWidth(4);
+        paint.setColor(Color.GREEN);
+        paint.setStyle(Paint.Style.FILL_AND_STROKE);
+        paint.setAntiAlias(true);
+
+        Point a = new Point(0, 0);
+        Point b = new Point(0, 100);
+        Point c = new Point(87, 50);
+
+        Path path = new Path();
+        path.setFillType(Path.FillType.EVEN_ODD);
+        path.lineTo(b.x, b.y);
+        path.lineTo(c.x, c.y);
+        path.lineTo(a.x, a.y);
+        path.close();
+
+        canvas.drawPath(path, paint);
     }
 }
