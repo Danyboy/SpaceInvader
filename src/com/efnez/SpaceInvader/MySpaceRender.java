@@ -85,7 +85,7 @@ public class MySpaceRender {
 
         paint.setColor(Color.RED);
         paint.setTextSize(100);
-        canvas.drawText(deadWarriorId+"", 10, 50, paint);
+        canvas.drawText(deadWarriorId+"", 10, 80, paint);
         paint.setColor(Color.BLACK);
     }
 

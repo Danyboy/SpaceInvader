@@ -14,7 +14,7 @@ public class SpaceActivity extends Activity {
     private MySpaceView mySpaceView;
     private Handler handler = new Handler();
     long fps = 60 * 2; //Wait in two times longer
-    long ttl = 400L;
+    long ttl = 250L;
     long last = System.currentTimeMillis();
     private boolean isPlaying;
 
