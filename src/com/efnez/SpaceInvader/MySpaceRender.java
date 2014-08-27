@@ -2,6 +2,7 @@ package com.efnez.SpaceInvader;
 
 import android.graphics.*;
 
+import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -10,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class MySpaceRender {
 
     private final ConcurrentHashMap<Integer, Warrior> warriors;
+    private final ConcurrentHashMap<Integer, Warrior> deadWarriors;
     private float x;
     private float y;
 
@@ -21,6 +23,7 @@ public class MySpaceRender {
     private ConcurrentHashMap<Integer, Bullet> bullets;
     int bulletQuantity = 0;
     int warriorId = 0;
+    private int deadWarriorId = 0;
 
     public MySpaceRender(MySpaceView view) {
         this.view = view;
@@ -30,6 +33,7 @@ public class MySpaceRender {
 
         bullets = new ConcurrentHashMap<Integer, Bullet>();
         warriors = new ConcurrentHashMap<Integer, Warrior>();
+        deadWarriors = new ConcurrentHashMap<Integer, Warrior>();
     }
 
     public void addBullet() {
@@ -37,7 +41,7 @@ public class MySpaceRender {
     }
 
     public void addWarrior() {
-        warriors.put(warriorId++, new Warrior(100, getRandomFloat(0, view.getWidth() / 2), getRandomFloat(0, view.getHeight())));
+        warriors.put(warriorId++, new Warrior(getRandomFloat(0, view.getWidth()), getRandomFloat(0, view.getHeight() / 2)));
     }
 
     public float getRandomFloat(float start, float end){
@@ -45,12 +49,11 @@ public class MySpaceRender {
     }
 
     public void repaint(Canvas canvas) {
-//        TODO dont repaint font
-        canvas.drawPaint(paint);
+        canvas.drawPaint(paint); //        TODO dont repaint font
 
-//      TODO rewrite with interface View.getX or with interface getPair
-        x = view.getPosition().first;
+        x = view.getPosition().first; //      TODO rewrite with interface View.getX or with interface getPair
         y = view.getPosition().second;
+
         drawTriangle(canvas, Color.GREEN, 100, x, y); //ship
 
         for (Warrior warrior : warriors.values()) {
@@ -63,38 +66,36 @@ public class MySpaceRender {
             addBullet();
         }
 
-        for (Bullet bullet : bullets.values()) {
+        for (Integer integer : bullets.keySet()) {
+            Bullet bullet = bullets.get(integer);
             if (bullet != null) {
                 drawTriangle(canvas, bullet.getTriangleColor(), bullet.getTriangleLength(), bullet.x, bullet.y);
                 bullet.y -= 5;
                 if (bullet.y < 0) {
-                    bullets.remove(bullet);
+                    bullets.remove(integer);
                 }
             }
         }
 
         checkIntersection();
-//        for (Warrior warrior : warriors.values()) {
-//            if (warrior.isAlive == false){
-//                warriors.remove(warrior);
-//            }
-//        }
 
-        if (warriors == null || warriors.isEmpty() || warriors.size() < 5){
-            for (int i = 0; i < 5; i++) {
+        if (warriors == null || warriors.isEmpty()) {
+//                || warriors.size() < 5){
+//            for (int i = 0; i < 5; i++) {
                 addWarrior();
-            }
+//            }
         }
     }
 
     void checkIntersection(){
         for (Bullet bullet : bullets.values()) {
-            for (Warrior warrior : warriors.values()) {
+            for (Integer id : warriors.keySet()) {
+                Warrior warrior = warriors.get(id);
                 if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
                         bullet.getTriangleLength() / 2 + warrior.getTriangleLength() / 2
                         && warrior.isAlive){
                     warrior.isAlive = false;
-                    warriors.remove(warrior);
+                    warriors.remove(id);
                 }
             }
         }

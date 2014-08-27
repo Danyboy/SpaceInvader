@@ -7,7 +7,7 @@ import android.graphics.Color;
  * Created by Dany on 02.05.14.
  */
 class Triangle <T>{
-    public static float triangleLength;
+    public float triangleLength;
     public T x, y;
     public int triangleColor;
 

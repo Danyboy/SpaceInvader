@@ -14,7 +14,7 @@ public class SpaceActivity extends Activity {
     private MySpaceView mySpaceView;
     private Handler handler = new Handler();
     long fps = 60 * 2; //Wait in two times longer
-    long ttl = 900L;
+    long ttl = 400L;
     long last = System.currentTimeMillis();
     private boolean isPlaying;
 
@@ -40,10 +40,10 @@ public class SpaceActivity extends Activity {
             public void run() {
                 mySpaceView.invalidate();
                 long now = System.currentTimeMillis();
-                if (now - last > ttl){
-                    last = now;
-                    mySpaceView.render.addBullet();
-                }
+//                if (now - last > ttl){
+//                    last = now;
+//                    mySpaceView.render.addBullet();
+//                }
 
                 if (isPlaying){
                     handler.postDelayed(this, 1000 / fps);
