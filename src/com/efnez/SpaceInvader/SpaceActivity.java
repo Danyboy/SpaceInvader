@@ -16,10 +16,12 @@ public class SpaceActivity extends Activity {
     long fps = 60 * 2; //Wait in two times longer
     long ttl = 300L;
     long last = System.currentTimeMillis();
-    private boolean isPlaying = true;
+    private boolean isPlaying;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        isPlaying = true;
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -43,7 +45,7 @@ public class SpaceActivity extends Activity {
                     mySpaceView.render.addBullet();
                 }
 
-                while (isPlaying){
+                if (isPlaying){
                     handler.postDelayed(this, 1000 / fps);
                 }
             }
@@ -69,5 +71,6 @@ public class SpaceActivity extends Activity {
         // this is a good place to re-allocate them.
         super.onResume();
         isPlaying = true;
+        gameLoop();
     }
 }

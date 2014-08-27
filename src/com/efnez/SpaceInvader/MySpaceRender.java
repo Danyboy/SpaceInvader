@@ -63,8 +63,11 @@ public class MySpaceRender {
             }
         }
     }
-
     private void drawTriangle(Canvas canvas){
+        drawTriangle(canvas, 0, 0);
+    }
+
+    private void drawTriangle(Canvas canvas, int x, int y){
         paint.setColor(android.graphics.Color.BLACK);
         canvas.drawPaint(paint);
 

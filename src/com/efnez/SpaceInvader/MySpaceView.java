@@ -6,7 +6,6 @@ import android.graphics.*;
 import android.util.Pair;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 /**
  * Created by Dany on 11.03.14.
@@ -20,23 +19,19 @@ public class MySpaceView extends View {
 
     public final static float triangleCenter = (119 - 1) / 2;
 
+//    private Canvas canvas;
+
     public MySpaceView(Context context) {
         super(context);
         resources = getResources();
         render = new MySpaceRender(this);
+
+//        gameLoop = new Timer("Game loop");
     }
 
-    void setDisplayCenter(){
-        getViewTreeObserver().addOnGlobalFocusChangeListener(
-            new ViewTreeObserver.OnGlobalFocusChangeListener(){
-                @Override
-                public void onGlobalFocusChanged(View view, View view2) {
-                    setPosition(getHeight() / 2, getWidth() / 2);
-                    getViewTreeObserver().removeOnGlobalFocusChangeListener(this);
-                    setVisibility( View.GONE );
-                }
-        });
-
+    @Override
+    protected void onFinishInflate(){
+        setPosition(getHeight() / 2, getWidth() / 2); //TODO FIX doesnt work
     }
 
     @Override
