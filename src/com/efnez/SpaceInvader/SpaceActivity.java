@@ -40,10 +40,10 @@ public class SpaceActivity extends Activity {
             public void run() {
                 mySpaceView.invalidate();
                 long now = System.currentTimeMillis();
-//                if (now - last > ttl){
-//                    last = now;
-//                    mySpaceView.render.addBullet();
-//                }
+                if (now - last > ttl){
+                    last = now;
+                    mySpaceView.render.addBullet();
+                }
 
                 if (isPlaying){
                     handler.postDelayed(this, 1000 / fps);

@@ -7,7 +7,7 @@ import android.graphics.Color;
  */
 public class Warrior extends Triangle <Float>{
     public boolean isAlive = true;
-    private static float warriorLength = 100;
+    private static float warriorLength = 50;
 
     public Warrior(float x, float y) {
         super(Color.RED, warriorLength, x, y);

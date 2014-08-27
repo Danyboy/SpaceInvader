@@ -57,9 +57,7 @@ public class MySpaceRender {
         drawTriangle(canvas, Color.GREEN, 100, x, y); //ship
 
         for (Warrior warrior : warriors.values()) {
-            if (warrior.isAlive){
                 drawTriangle(canvas, warrior.getTriangleColor(), warrior.getTriangleLength(), warrior.x, warrior.y);
-            }
         }
 
         if (bullets == null || bullets.isEmpty()) {
@@ -79,12 +77,16 @@ public class MySpaceRender {
 
         checkIntersection();
 
-        if (warriors == null || warriors.isEmpty()) {
-//                || warriors.size() < 5){
-//            for (int i = 0; i < 5; i++) {
+        if (warriors == null || warriors.isEmpty() || warriors.size() < 5){
+            for (int i = 0; i < 5; i++) {
                 addWarrior();
-//            }
+            }
         }
+
+        paint.setColor(Color.RED);
+        paint.setTextSize(100);
+        canvas.drawText(deadWarriorId+"", 10, 50, paint);
+        paint.setColor(Color.BLACK);
     }
 
     void checkIntersection(){
@@ -92,10 +94,9 @@ public class MySpaceRender {
             for (Integer id : warriors.keySet()) {
                 Warrior warrior = warriors.get(id);
                 if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
-                        bullet.getTriangleLength() / 2 + warrior.getTriangleLength() / 2
-                        && warrior.isAlive){
-                    warrior.isAlive = false;
+                        bullet.getTriangleLength() / 2 + warrior.getTriangleLength() / 2){
                     warriors.remove(id);
+                    deadWarriorId++;
                 }
             }
         }
