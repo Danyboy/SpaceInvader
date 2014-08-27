@@ -56,8 +56,8 @@ public class MySpaceView extends View {
     }
 
     void setPosition(float x, float y) {
-        this.x = x - triangleCenter; // Triangle image centering // TODO refactor with Bitmap.getWidth()
-        this.y = y - 120;
+        this.x = x;
+        this.y = y;
     }
 
     public Pair<Float, Float> getPosition(){
