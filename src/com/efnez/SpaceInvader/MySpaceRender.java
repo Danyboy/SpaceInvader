@@ -37,7 +37,7 @@ public class MySpaceRender {
     }
 
     public void addWarrior() {
-        warriors.put(warriorId++, new Warrior(100, getRandomFloat(0, view.getWidth()), getRandomFloat(0, view.getHeight())));
+        warriors.put(warriorId++, new Warrior(100, getRandomFloat(0, view.getWidth() / 2), getRandomFloat(0, view.getHeight())));
     }
 
     public float getRandomFloat(float start, float end){
@@ -52,6 +52,12 @@ public class MySpaceRender {
         x = view.getPosition().first;
         y = view.getPosition().second;
         drawTriangle(canvas, Color.GREEN, 100, x, y); //ship
+
+        for (Warrior warrior : warriors.values()) {
+            if (warrior.isAlive){
+                drawTriangle(canvas, warrior.getTriangleColor(), warrior.getTriangleLength(), warrior.x, warrior.y);
+            }
+        }
 
         if (bullets == null || bullets.isEmpty()) {
             addBullet();
@@ -68,18 +74,11 @@ public class MySpaceRender {
         }
 
         checkIntersection();
-        for (Warrior warrior : warriors.values()) {
-            if (warrior.isAlive == false){
-                warriors.remove(warrior);
-            }
-        }
-
-
-        for (Warrior warrior : warriors.values()) {
-            if (warrior.isAlive){
-                drawTriangle(canvas, warrior.getTriangleColor(), warrior.getTriangleLength(), warrior.x, warrior.y);
-            }
-        }
+//        for (Warrior warrior : warriors.values()) {
+//            if (warrior.isAlive == false){
+//                warriors.remove(warrior);
+//            }
+//        }
 
         if (warriors == null || warriors.isEmpty() || warriors.size() < 5){
             for (int i = 0; i < 5; i++) {
