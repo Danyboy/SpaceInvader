@@ -42,7 +42,7 @@ public class SpaceActivity extends Activity {
                 long now = System.currentTimeMillis();
                 if (now - last > ttl){
                     last = now;
-                    mySpaceView.render.addBullet();
+                    mySpaceView.render.addGreenBullet();
                 }
 
                 if (isPlaying){

@@ -18,10 +18,10 @@ class Triangle <T>{
         this.y = y;
     }
 
-    public float getTriangleLength() {
+    public float getLength() {
         return triangleLength;
     }
-    public int getTriangleColor() {
+    public int getColor() {
         return triangleColor;
     }
 

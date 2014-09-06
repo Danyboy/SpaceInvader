@@ -8,12 +8,18 @@ import android.graphics.Color;
 * Created by Dany on 02.05.14.
 */
 public class Bullet extends Triangle <Float> {
-    public int ttl;
+    public long ttl;
     public static float bulletLength = 10; //TODO change with display width
 
-    public Bullet(int color, float x, float y) {
+    public Bullet(int color, long ttl, float x, float y) {
         super(color, bulletLength, x, y);
+        this.ttl = ttl;
     }
+
+    public long getTtl() {
+        return ttl;
+    }
+
 }
 
 

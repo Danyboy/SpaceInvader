@@ -49,7 +49,7 @@ public class MySpaceView extends View {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-//                render.addBullet();
+//                render.addGreenBullet();
 //                invalidate();
         }
         return true;
