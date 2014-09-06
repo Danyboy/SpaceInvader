@@ -14,10 +14,10 @@ public class SpaceActivity extends Activity {
     private MySpaceView mySpaceView;
     private Handler handler = new Handler();
     long fps = 60 * 2; //Wait in two times longer
-    long ttl = 250L;
-    long last = System.currentTimeMillis();
+    long lastGreenFire = System.currentTimeMillis();
     private boolean isPlaying;
     private long now;
+    private long lastRedFire;
 
 
     @Override
@@ -37,7 +37,7 @@ public class SpaceActivity extends Activity {
     }
 
     private void addEvent() {
-
+        //TODO all time repaint convert into events (redBullet event etc)
     }
 
 
@@ -59,13 +59,13 @@ public class SpaceActivity extends Activity {
     }
 
     private void addBullet() {
-        if (now - last > GreenBullet.ttl){
-            last = now;
+        if (now - lastGreenFire > GreenBullet.ttl){
             mySpaceView.render.addGreenBullet();
+            lastGreenFire = now;
         }
-        if (now - last > RedBullet.ttl){
-            last = now;
+        if (now - lastRedFire > RedBullet.ttl){
             mySpaceView.render.addRedBullets();
+            lastRedFire = now;
         }
     }
 
