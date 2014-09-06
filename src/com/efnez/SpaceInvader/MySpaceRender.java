@@ -66,13 +66,11 @@ public class MySpaceRender {
 
         for (Warrior warrior : warriors.values()) {
             drawReverseTriangle(warrior.getColor(), warrior.getLength(), warrior.x, warrior.y);
-            addRedBullet(warrior.x, warrior.y);
         }
-
-        addGreenBullets();
+//        addGreenBullets(); //Added by timer
 
         moveBullets(greenBullets, 5, 0); //step in one iteration and border
-        moveBullets(redBullets, 3, view.getHeight());
+        moveBullets(redBullets, -3, view.getHeight());
         checkIntersection();
 
         addWarriors();
@@ -81,6 +79,13 @@ public class MySpaceRender {
         paint.setTextSize(100);
         canvas.drawText(deadWarriorId+"", 10, 80, paint);
         paint.setColor(Color.BLACK);
+    }
+
+    public void addRedBullets(){
+        for (Warrior warrior : warriors.values()) {
+            drawReverseTriangle(warrior.getColor(), warrior.getLength(), warrior.x, warrior.y);
+            addRedBullet(warrior.x, warrior.y);
+        }
     }
 
     private void moveBullets(ConcurrentHashMap<Integer, Bullet> bullets, float step, float border) {

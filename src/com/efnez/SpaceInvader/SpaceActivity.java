@@ -17,6 +17,7 @@ public class SpaceActivity extends Activity {
     long ttl = 250L;
     long last = System.currentTimeMillis();
     private boolean isPlaying;
+    private long now;
 
 
     @Override
@@ -31,19 +32,22 @@ public class SpaceActivity extends Activity {
         // as the ContentView for this Activity.
         mySpaceView = new MySpaceView(this);
         setContentView(mySpaceView);
+        addEvent();
         gameLoop();
     }
+
+    private void addEvent() {
+
+    }
+
 
     private void gameLoop(){
         Runnable loop = new Runnable() {
             @Override
             public void run() {
                 mySpaceView.invalidate();
-                long now = System.currentTimeMillis();
-                if (now - last > ttl){
-                    last = now;
-                    mySpaceView.render.addGreenBullet();
-                }
+                now = System.currentTimeMillis();
+                addBullet();
 
                 if (isPlaying){
                     handler.postDelayed(this, 1000 / fps);
@@ -52,6 +56,17 @@ public class SpaceActivity extends Activity {
         };
 
         handler.postDelayed(loop, 1000 / fps);
+    }
+
+    private void addBullet() {
+        if (now - last > GreenBullet.ttl){
+            last = now;
+            mySpaceView.render.addGreenBullet();
+        }
+        if (now - last > RedBullet.ttl){
+            last = now;
+            mySpaceView.render.addRedBullets();
+        }
     }
 
     @Override
