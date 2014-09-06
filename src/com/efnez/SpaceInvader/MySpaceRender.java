@@ -2,7 +2,6 @@ package com.efnez.SpaceInvader;
 
 import android.graphics.*;
 
-import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -57,7 +56,7 @@ public class MySpaceRender {
         drawTriangle(canvas, Color.GREEN, 100, x, y); //ship
 
         for (Warrior warrior : warriors.values()) {
-                drawTriangle(canvas, warrior.getTriangleColor(), warrior.getTriangleLength(), warrior.x, warrior.y);
+                drawReverseTriangle(canvas, warrior.getTriangleColor(), warrior.getTriangleLength(), warrior.x, warrior.y);
         }
 
         if (bullets == null || bullets.isEmpty()) {
@@ -77,16 +76,20 @@ public class MySpaceRender {
 
         checkIntersection();
 
-        if (warriors == null || warriors.isEmpty() || warriors.size() < 5){
-            for (int i = 0; i < 5; i++) {
-                addWarrior();
-            }
-        }
+        addWarriors();
 
         paint.setColor(Color.RED);
         paint.setTextSize(100);
         canvas.drawText(deadWarriorId+"", 10, 80, paint);
         paint.setColor(Color.BLACK);
+    }
+
+    private void addWarriors() {
+        if (warriors == null || warriors.isEmpty() || warriors.size() < 5){
+            for (int i = 0; i < 5; i++) {
+                addWarrior();
+            }
+        }
     }
 
     void checkIntersection(){
@@ -106,18 +109,13 @@ public class MySpaceRender {
         return (float) Math.sqrt(Math.pow((ay - by), 2) + Math.pow(ax - bx, 2));
     }
 
-    private void drawTriangle(Canvas canvas, int color, float length, float x , float y){
+    private void drawTriangle(Canvas canvas, int color, Point a, Point b, Point c){
         Paint trianglePaint = new Paint();
 
         trianglePaint.setStrokeWidth(4);
         trianglePaint.setColor(color);
         trianglePaint.setStyle(Paint.Style.FILL_AND_STROKE);
         trianglePaint.setAntiAlias(true);
-
-        float myX = x, myY = y;
-        Point a = new Point((int) (myX - length / 2), (int) (myY + length / 2));
-        Point b = new Point((int) (myX + length / 2), (int) (myY + length / 2));
-        Point c = new Point((int) myX, (int) (myY - length / 2));
 
         Path path = new Path();
         path.setFillType(Path.FillType.EVEN_ODD);
@@ -129,5 +127,26 @@ public class MySpaceRender {
         path.close();
 
         canvas.drawPath(path, trianglePaint);
+
+    }
+
+    private void drawReverseTriangle(Canvas canvas, int triangleColor, float triangleLength, float x, float y) {
+        Point a = new Point((int) (x - triangleLength / 2), (int) (y - triangleLength / 2));
+        Point b = new Point((int) (x + triangleLength / 2), (int) (y - triangleLength / 2));
+        Point c = new Point((int) x, (int) (y - triangleLength / 2));
+
+        drawTriangle(canvas, triangleColor, a, b, c);
+
+    }
+
+
+
+    private void drawTriangle(Canvas canvas, int triangleColor, float triangleLength, float x , float y){
+
+        Point a = new Point((int) (x - triangleLength / 2), (int) (y + triangleLength / 2));
+        Point b = new Point((int) (x + triangleLength / 2), (int) (y + triangleLength / 2));
+        Point c = new Point((int) x, (int) (y - triangleLength / 2));
+
+        drawTriangle(canvas, triangleColor, a, b, c);
     }
 }
