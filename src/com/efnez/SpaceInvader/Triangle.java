@@ -26,4 +26,7 @@ class Triangle <T>{
     }
 
 
+    public void setTriangleLength(float triangleLength) {
+        this.triangleLength = triangleLength;
+    }
 }

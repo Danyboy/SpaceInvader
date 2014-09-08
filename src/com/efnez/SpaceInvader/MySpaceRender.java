@@ -25,6 +25,7 @@ public class MySpaceRender {
     private Canvas canvas;
     private int greenHealth = 0;
     float greenTriangleLength = 100;
+    private ConcurrentHashMap<Integer, Triangle> deadWarriors;
 
     public MySpaceRender(MySpaceView view) {
         this.view = view;
@@ -32,6 +33,7 @@ public class MySpaceRender {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
 
+        deadWarriors = new ConcurrentHashMap<Integer, Triangle>();
         greenBullets = new ConcurrentHashMap<Integer, Triangle>();
         redBullets = new ConcurrentHashMap<Integer, Triangle>();
         warriors = new ConcurrentHashMap<Integer, Triangle>();
@@ -68,9 +70,19 @@ public class MySpaceRender {
         checkIntersection();
         checkGreenIntersection();
 
+        minimizeTriangle(deadWarriors, 1);
+        moveTriangle(deadWarriors, 0);
+
         addWarriors();
         drawText(Color.RED, deadWarriorId + "", 10, 80);
         drawText(Color.GREEN, greenHealth+"", 10, view.getHeight() - 80);
+    }
+
+    private void minimizeTriangle(ConcurrentHashMap<Integer, Triangle> triangles, int i) {
+        for (Integer integer : triangles.keySet()) {
+            Triangle<Float> triangle = triangles.get(integer);
+            triangle.setTriangleLength(triangle.getLength() - 1);
+        }
     }
 
     private void drawWarriors() { // todo move war and minimize on breake
@@ -127,6 +139,7 @@ public class MySpaceRender {
                 Triangle<Float> warrior = warriors.get(id);
                 if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
                         bullet.getLength() / 2 + warrior.getLength() / 2){
+                    deadWarriors.put(deadWarriorId, warriors.get(id));
                     warriors.remove(id);
                     deadWarriorId++;
                 }
