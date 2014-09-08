@@ -12,8 +12,7 @@ public class MySpaceRender {
     private final ConcurrentHashMap<Integer, Triangle> warriors;
     private final ConcurrentHashMap<Integer, Triangle> redBullets;
     private ConcurrentHashMap<Integer, Triangle> greenBullets;
-    private float x;
-    private float y;
+    private Triangle greenTriangle;
 
     private Paint paint;
     private MySpaceView view;
@@ -32,6 +31,7 @@ public class MySpaceRender {
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
+        greenTriangle = new GreenTriangleShip(greenTriangleLength, view.getWidth() / 2, view.getHeight());
 
         deadWarriors = new ConcurrentHashMap<Integer, Triangle>();
         greenBullets = new ConcurrentHashMap<Integer, Triangle>();
@@ -40,7 +40,7 @@ public class MySpaceRender {
     }
 
     public void addGreenBullet() {
-        greenBullets.put(greenBulletQuantity++, new GreenBullet(x, y));
+        greenBullets.put(greenBulletQuantity++, new GreenBullet(greenTriangle.x, greenTriangle.y));
     }
 
     public void addRedBullet(Float x, Float y) {
@@ -59,10 +59,10 @@ public class MySpaceRender {
         this.canvas = canvas;
         canvas.drawPaint(paint); //        TODO dont repaint font
 
-        x = view.getPosition().first; //      TODO rewrite with interface View.getX or with interface getPair
-        y = view.getPosition().second;
+        greenTriangle.x = view.getPosition().first; //      TODO rewrite with interface View.getX or with interface getPair
+        greenTriangle.y = view.getPosition().second;
 
-        drawTriangle(Color.GREEN, greenTriangleLength, x, y); //ship
+        drawTriangle(greenTriangle); //ship
         drawWarriors();
         moveTriangle(greenBullets, -5);
         moveTriangle(redBullets, 3);
@@ -78,9 +78,11 @@ public class MySpaceRender {
         drawText(Color.GREEN, greenHealth+"", 10, view.getHeight() - 80);
     }
 
+
+
     private void minimizeTriangle(ConcurrentHashMap<Integer, Triangle> triangles, int i) {
         for (Integer integer : triangles.keySet()) {
-            Triangle<Float> triangle = triangles.get(integer);
+            Triangle triangle = triangles.get(integer);
             if (triangle.getLength() > 1 ) {
                 triangle.setTriangleLength(triangle.getLength() - i);
             } else {
@@ -90,8 +92,8 @@ public class MySpaceRender {
     }
 
     private void drawWarriors() { // todo move war and minimize on breake
-        for (Triangle<Float> warrior : warriors.values()) {
-            drawReverseTriangle(warrior.getColor(), warrior.getLength(), warrior.x, warrior.y);
+        for (Triangle warrior : warriors.values()) {
+            drawTriangle(warrior);
         }
     }
 
@@ -103,26 +105,24 @@ public class MySpaceRender {
     }
 
     public void addRedBullets(){
-        for (Triangle<Float> warrior : warriors.values()) {
+        for (Triangle warrior : warriors.values()) {
             addRedBullet(warrior.x, warrior.y);
         }
     }
 
-    private void moveTriangle(ConcurrentHashMap<Integer, Triangle> triangles, float step) { //TODO rewrite with (path) some.draw
+    private void moveTriangle(ConcurrentHashMap<Integer, Triangle> triangles, float step) { //TODO rewrite with (triangle) some.draw
         for (Integer integer : triangles.keySet()) {
-            Triangle<Float> triangle = triangles.get(integer);
-            if (triangle != null) {
-                if (triangle.getColor() == Color.GREEN){
-                    drawTriangle(triangle.getColor(), triangle.getLength(), triangle.x, triangle.y);
-                } else {
-                    drawReverseTriangle(triangle.getColor(), triangle.getLength(), triangle.x, triangle.y);
-                }
-                triangle.y += step;
-                if (! isInBorder(triangle.x, triangle.y)){
-                    triangles.remove(integer);
-                }
+            Triangle triangle = triangles.get(integer);
+            drawTriangle(triangle);
+            triangle.y += step;
+            if (! isInBorder(triangle.x, triangle.y)){
+                triangles.remove(integer);
             }
         }
+    }
+
+    private void drawTriangle(Triangle triangle) {
+        canvas.drawPath(triangle.drawTriangle(), triangle.trianglePainter);
     }
 
     private boolean isInBorder(Float x, Float y) {
@@ -138,9 +138,9 @@ public class MySpaceRender {
     }
 
     void checkIntersection(){ //ConcurrentHashMap<Integer, Bullet> greenBullets, ConcurrentHashMap<Integer, Warrio> 
-        for (Triangle<Float> bullet : greenBullets.values()) {
+        for (Triangle bullet : greenBullets.values()) {
             for (Integer id : warriors.keySet()) {
-                Triangle<Float> warrior = warriors.get(id);
+                Triangle warrior = warriors.get(id);
                 if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
                         bullet.getLength() / 2 + warrior.getLength() / 2){
                     deadWarriors.put(deadWarriorId, warriors.get(id));
@@ -153,9 +153,9 @@ public class MySpaceRender {
 
     void checkGreenIntersection(){ //ConcurrentHashMap<Integer, Bullet> greenBullets, ConcurrentHashMap<Integer, Warrior>
         for (Integer integer : redBullets.keySet()) {
-            Triangle <Float> bullet = redBullets.get(integer);
-            if (getDistance(bullet.x, bullet.y, x, y) <
-                    bullet.getLength() / 2 + greenTriangleLength / 2){
+            Triangle bullet = redBullets.get(integer);
+            if (getDistance(bullet.x, bullet.y, greenTriangle.x, greenTriangle.y) <
+                bullet.getLength() / 2 + greenTriangleLength / 2){
                     redBullets.remove(integer);
                     greenHealth++;
             }
@@ -167,44 +167,5 @@ public class MySpaceRender {
         return (float) Math.sqrt(Math.pow((ay - by), 2) + Math.pow(ax - bx, 2));
     }
 
-    private void drawTriangle(int color, Point a, Point b, Point c){
-        Paint trianglePaint = new Paint();
 
-        trianglePaint.setStrokeWidth(4);
-        trianglePaint.setColor(color);
-        trianglePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        trianglePaint.setAntiAlias(true);
-
-        Path path = new Path();
-        path.setFillType(Path.FillType.EVEN_ODD);
-        path.moveTo(b.x, b.y);
-        path.lineTo(b.x, b.y);
-        path.lineTo(c.x, c.y);
-        path.lineTo(a.x, a.y);
-        path.lineTo(b.x, b.y);
-        path.close();
-
-        canvas.drawPath(path, trianglePaint);
-
-    }
-
-    private void drawReverseTriangle(int triangleColor, float triangleLength, float x, float y) {
-        Point a = new Point((int) (x - triangleLength / 2), (int) (y - triangleLength / 2));
-        Point b = new Point((int) (x + triangleLength / 2), (int) (y - triangleLength / 2));
-        Point c = new Point((int) x, (int) (y + triangleLength / 2));
-
-        drawTriangle(triangleColor, a, b, c);
-
-    }
-
-
-
-    private void drawTriangle(int triangleColor, float triangleLength, float x , float y){
-
-        Point a = new Point((int) (x - triangleLength / 2), (int) (y + triangleLength / 2));
-        Point b = new Point((int) (x + triangleLength / 2), (int) (y + triangleLength / 2));
-        Point c = new Point((int) x, (int) (y - triangleLength / 2));
-
-        drawTriangle(triangleColor, a, b, c);
-    }
 }
