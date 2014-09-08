@@ -1,6 +1,7 @@
 package com.efnez.SpaceInvader;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
@@ -11,6 +12,8 @@ import android.view.WindowManager;
  * User: Dany
  */
 public class SpaceActivity extends Activity {
+    public static int X;
+    public static int Y;
     private MySpaceView mySpaceView;
     private Handler handler = new Handler();
     long fps = 60 * 2; //Wait in two times longer
@@ -30,7 +33,8 @@ public class SpaceActivity extends Activity {
 
         // Create a instance and set it
         // as the ContentView for this Activity.
-        mySpaceView = new MySpaceView(this);
+        Intent intent = getIntent();
+        mySpaceView = new MySpaceView(this, intent.getIntExtra("x", 100), intent.getIntExtra("y", 100));
         setContentView(mySpaceView);
         addEvent();
         gameLoop();

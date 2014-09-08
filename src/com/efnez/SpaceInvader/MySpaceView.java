@@ -1,6 +1,7 @@
 package com.efnez.SpaceInvader;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.util.Pair;
@@ -21,17 +22,12 @@ public class MySpaceView extends View {
 
 //    private Canvas canvas;
 
-    public MySpaceView(Context context) {
+    public MySpaceView(Context context, int x,int y) {
         super(context);
         resources = getResources();
-        render = new MySpaceRender(this);
+        render = new MySpaceRender(this, x, y);
 
 //        gameLoop = new Timer("Game loop");
-    }
-
-    @Override
-    protected void onFinishInflate(){
-        setPosition(getHeight() / 2, getWidth() / 2); //TODO FIX doesnt work
     }
 
     @Override

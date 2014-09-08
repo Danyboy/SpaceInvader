@@ -43,7 +43,7 @@ abstract class Triangle {
         triangle.lineTo(b.x, b.y);
         triangle.close();
 
-//        canvas.drawPath(triangle, trianglePaint);
+//        canvas.drawPath(greenTriangle, trianglePaint);
         return triangle;
     }
 

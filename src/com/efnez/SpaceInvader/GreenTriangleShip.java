@@ -9,16 +9,10 @@ import android.graphics.Point;
  * Created by Dany on 08.05.14.
  */
 public class GreenTriangleShip extends Triangle {
+    public static float triangleLength = 100;
 
-//    How to static initialise and use super methods?
-//
-//
-//
-//    public static float triangleLength = (119 - 1) / 2;
-//    public static Bitmap bitmap = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.green_triangle);
-
-    public GreenTriangleShip(float length,float x, float y){
-        super(Color.GREEN, length, x, y);
+    public GreenTriangleShip(float x, float y){
+        super(Color.GREEN, triangleLength, x, y);
     }
 
     @Override
