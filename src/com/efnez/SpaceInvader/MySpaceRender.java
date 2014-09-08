@@ -81,7 +81,11 @@ public class MySpaceRender {
     private void minimizeTriangle(ConcurrentHashMap<Integer, Triangle> triangles, int i) {
         for (Integer integer : triangles.keySet()) {
             Triangle<Float> triangle = triangles.get(integer);
-            triangle.setTriangleLength(triangle.getLength() - 1);
+            if (triangle.getLength() > 1 ) {
+                triangle.setTriangleLength(triangle.getLength() - i);
+            } else {
+                triangles.remove(integer);
+            }
         }
     }
 
