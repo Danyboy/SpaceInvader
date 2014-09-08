@@ -9,15 +9,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MySpaceRender {
 
-    private final ConcurrentHashMap<Integer, Warrior> warriors;
-    private final ConcurrentHashMap<Integer, Bullet> redBullets;
+    private final ConcurrentHashMap<Integer, Triangle> warriors;
+    private final ConcurrentHashMap<Integer, Triangle> redBullets;
+    private ConcurrentHashMap<Integer, Triangle> greenBullets;
     private float x;
     private float y;
 
     private Paint paint;
     private MySpaceView view;
 
-    private ConcurrentHashMap<Integer, Bullet> greenBullets;
     int greenBulletQuantity = 0;
     int warriorId = 0;
     private int deadWarriorId = 0;
@@ -32,9 +32,9 @@ public class MySpaceRender {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
 
-        greenBullets = new ConcurrentHashMap<Integer, Bullet>();
-        redBullets = new ConcurrentHashMap<Integer, Bullet>();
-        warriors = new ConcurrentHashMap<Integer, Warrior>();
+        greenBullets = new ConcurrentHashMap<Integer, Triangle>();
+        redBullets = new ConcurrentHashMap<Integer, Triangle>();
+        warriors = new ConcurrentHashMap<Integer, Triangle>();
     }
 
     public void addGreenBullet() {
@@ -46,7 +46,7 @@ public class MySpaceRender {
     }
 
     public void addWarrior() {
-        warriors.put(warriorId++, new Warrior(getRandomFloat(0, view.getWidth()), getRandomFloat(0, view.getHeight() / 2)));
+        warriors.put(warriorId++, new Warrior(getRandomFloat(0, view.getWidth()), 10));
     }
 
     public float getRandomFloat(float start, float end){
@@ -61,18 +61,22 @@ public class MySpaceRender {
         y = view.getPosition().second;
 
         drawTriangle(Color.GREEN, greenTriangleLength, x, y); //ship
-
-        for (Warrior warrior : warriors.values()) {
-            drawReverseTriangle(warrior.getColor(), warrior.getLength(), warrior.x, warrior.y);
-        }
-        moveBullets(greenBullets, -5, 0, true); //step in one iteration and border
-        moveBullets(redBullets, 3, view.getHeight(), false);
+        drawWarriors();
+        moveTriangle(greenBullets, -5);
+        moveTriangle(redBullets, 3);
+        moveTriangle(warriors, 1);
         checkIntersection();
         checkGreenIntersection();
 
         addWarriors();
         drawText(Color.RED, deadWarriorId + "", 10, 80);
         drawText(Color.GREEN, greenHealth+"", 10, view.getHeight() - 80);
+    }
+
+    private void drawWarriors() { // todo move war and minimize on breake
+        for (Triangle<Float> warrior : warriors.values()) {
+            drawReverseTriangle(warrior.getColor(), warrior.getLength(), warrior.x, warrior.y);
+        }
     }
 
     private void drawText(int color, String text, float x, float y) {
@@ -83,32 +87,30 @@ public class MySpaceRender {
     }
 
     public void addRedBullets(){
-        for (Warrior warrior : warriors.values()) {
+        for (Triangle<Float> warrior : warriors.values()) {
             addRedBullet(warrior.x, warrior.y);
         }
     }
 
-    private void moveBullets(ConcurrentHashMap<Integer, Bullet> bullets, float step, float border, boolean isGreen) {
-        for (Integer integer : bullets.keySet()) {
-            Bullet bullet = bullets.get(integer);
-            if (bullet != null) {
-                if (isGreen){
-                    drawTriangle(bullet.getColor(), bullet.getLength(), bullet.x, bullet.y);
+    private void moveTriangle(ConcurrentHashMap<Integer, Triangle> triangles, float step) { //TODO rewrite with (path) some.draw
+        for (Integer integer : triangles.keySet()) {
+            Triangle<Float> triangle = triangles.get(integer);
+            if (triangle != null) {
+                if (triangle.getColor() == Color.GREEN){
+                    drawTriangle(triangle.getColor(), triangle.getLength(), triangle.x, triangle.y);
                 } else {
-                    drawReverseTriangle(bullet.getColor(), bullet.getLength(), bullet.x, bullet.y);
+                    drawReverseTriangle(triangle.getColor(), triangle.getLength(), triangle.x, triangle.y);
                 }
-                bullet.y += step;
-                if (isGreen){ //TODO remove this shit
-                    if (bullet.y < border) {
-                        bullets.remove(integer);
-                    }
-                }else {
-                    if (bullet.y > border) {
-                        bullets.remove(integer);
-                    }
+                triangle.y += step;
+                if (! isInBorder(triangle.x, triangle.y)){
+                    triangles.remove(integer);
                 }
             }
         }
+    }
+
+    private boolean isInBorder(Float x, Float y) {
+        return (0 < x && x < view.getWidth() && 0 < y && y < view.getHeight());
     }
 
     private void addWarriors() {
@@ -120,9 +122,9 @@ public class MySpaceRender {
     }
 
     void checkIntersection(){ //ConcurrentHashMap<Integer, Bullet> greenBullets, ConcurrentHashMap<Integer, Warrio> 
-        for (Bullet bullet : greenBullets.values()) {
+        for (Triangle<Float> bullet : greenBullets.values()) {
             for (Integer id : warriors.keySet()) {
-                Warrior warrior = warriors.get(id);
+                Triangle<Float> warrior = warriors.get(id);
                 if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
                         bullet.getLength() / 2 + warrior.getLength() / 2){
                     warriors.remove(id);
@@ -134,7 +136,7 @@ public class MySpaceRender {
 
     void checkGreenIntersection(){ //ConcurrentHashMap<Integer, Bullet> greenBullets, ConcurrentHashMap<Integer, Warrior>
         for (Integer integer : redBullets.keySet()) {
-            Bullet bullet = redBullets.get(integer);
+            Triangle <Float> bullet = redBullets.get(integer);
             if (getDistance(bullet.x, bullet.y, x, y) <
                     bullet.getLength() / 2 + greenTriangleLength / 2){
                     redBullets.remove(integer);
