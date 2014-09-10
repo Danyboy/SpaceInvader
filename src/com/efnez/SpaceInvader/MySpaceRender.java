@@ -25,12 +25,12 @@ public class MySpaceRender {
     private int greenHealth = 0;
     private ConcurrentHashMap<Integer, Triangle> deadWarriors;
 
-    public MySpaceRender(MySpaceView view, int x, int y) {
+    public MySpaceRender(MySpaceView view) {
         this.view = view;
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
-        greenTriangle = new GreenTriangleShip(x, y);
+        greenTriangle = new GreenTriangleShip(MenuActivity.X / 2, MenuActivity.Y / 2);
 
         deadWarriors = new ConcurrentHashMap<Integer, Triangle>();
         greenBullets = new ConcurrentHashMap<Integer, Triangle>();

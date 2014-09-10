@@ -3,7 +3,7 @@ package com.efnez.SpaceInvader;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
+import android.graphics.*;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.Button;
@@ -45,22 +45,6 @@ public class MenuActivity extends Activity {
         setContentView(menuView);
     }
 
-    public void showMenu() {
-
-        image = (ImageView) findViewById(R.id.imageView);
-        image.setImageResource(R.drawable.green_triangle);
-        intent = new Intent(this, SpaceActivity.class);
-
-        button = (Button) findViewById(R.id.startBattle);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View arg0) {
-                startActivity(intent);
-            }
-        });
-
-    }
-
     @Override
     protected void onResume() {
         // The following call resumes a paused rendering thread.
@@ -79,7 +63,7 @@ class MenuView extends View{
 
     public MenuView(Context context, int X, int Y) {
         super(context);
-        greenTriangle = new GreenTriangleShip(X / 2, Y / 2);
+        greenTriangle = new GreenTriangleShip(X / 2, Y - Y / 3);
         intent.putExtra("x", X);
         intent.putExtra("y", Y);
     }
@@ -88,9 +72,38 @@ class MenuView extends View{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawPath(greenTriangle.drawTriangle(), greenTriangle.trianglePainter);
-        if (greenTriangle.y > MenuActivity.Y - MenuActivity.Y / 3){
+        canvas.drawPath(setGreenAim(MenuActivity.X / 2, MenuActivity.Y / 2), getPointer());
+        if (MySpaceRender.getDistance(greenTriangle.x, greenTriangle.y, MenuActivity.X / 2, MenuActivity.Y / 2) < 20){
             startBattle();
         }
+    }
+
+    private Paint getPointer() {
+        Paint trianglePainter = new Paint();
+
+        trianglePainter.setStrokeWidth(4);
+        trianglePainter.setColor(Color.GREEN);
+        trianglePainter.setStyle(Paint.Style.STROKE);
+        trianglePainter.setAntiAlias(true);
+        return trianglePainter;
+    }
+
+    private Path setGreenAim(int x, int y){
+        Path triangle;
+        float triangleLength = 120;
+        Point a = new Point((int) (x - triangleLength / 2), (int) (y + triangleLength / 2));
+        Point b = new Point((int) (x + triangleLength / 2), (int) (y + triangleLength / 2));
+        Point c = new Point((int) x, (int) (y - triangleLength / 2));
+
+        triangle = new Path();
+        triangle.setFillType(Path.FillType.EVEN_ODD);
+        triangle.moveTo(b.x, b.y);
+        triangle.lineTo(b.x, b.y);
+        triangle.lineTo(c.x, c.y);
+        triangle.lineTo(a.x, a.y);
+        triangle.lineTo(b.x, b.y);
+        triangle.close();
+        return triangle;
     }
 
     @Override

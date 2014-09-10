@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 
 /**
  * Created with IntelliJ IDEA.
@@ -34,7 +36,7 @@ public class SpaceActivity extends Activity {
         // Create a instance and set it
         // as the ContentView for this Activity.
         Intent intent = getIntent();
-        mySpaceView = new MySpaceView(this, intent.getIntExtra("x", 100), intent.getIntExtra("y", 100));
+        mySpaceView = new MySpaceView(this);
         setContentView(mySpaceView);
         addEvent();
         gameLoop();
@@ -91,5 +93,11 @@ public class SpaceActivity extends Activity {
         super.onResume();
         isPlaying = true;
         gameLoop();
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Intent intent = new Intent(this, SpaceActivity.class);
+//        startActivity(intent);
     }
 }

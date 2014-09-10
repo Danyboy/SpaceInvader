@@ -18,16 +18,11 @@ public class MySpaceView extends View {
     public static Resources resources;
     public MySpaceRender render;
 
-    public final static float triangleCenter = (119 - 1) / 2;
-
-//    private Canvas canvas;
-
-    public MySpaceView(Context context, int x,int y) {
+    public MySpaceView(Context context) {
         super(context);
         resources = getResources();
-        render = new MySpaceRender(this, x, y);
-
-//        gameLoop = new Timer("Game loop");
+        render = new MySpaceRender(this);
+        setPosition(MenuActivity.X / 2, MenuActivity.Y / 2);
     }
 
     @Override
