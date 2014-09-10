@@ -60,21 +60,29 @@ public class MenuActivity extends Activity {
 class MenuView extends View{
     Triangle greenTriangle;
     Intent intent = new Intent(this.getContext(), SpaceActivity.class);
+    Bitmap background1;
 
     public MenuView(Context context, int X, int Y) {
         super(context);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        background1 = BitmapFactory.decodeResource(getResources(), R.drawable.stars1);
         greenTriangle = new GreenTriangleShip(X / 2, Y - Y / 3);
         intent.putExtra("x", X);
         intent.putExtra("y", Y);
     }
+    boolean runOnce = true;
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        canvas.drawBitmap(background1, -400, 0, greenTriangle.trianglePainter);
+
         canvas.drawPath(greenTriangle.drawTriangle(), greenTriangle.trianglePainter);
         canvas.drawPath(setGreenAim(MenuActivity.X / 2, MenuActivity.Y / 2), getPointer());
-        if (MySpaceRender.getDistance(greenTriangle.x, greenTriangle.y, MenuActivity.X / 2, MenuActivity.Y / 2) < 20){
+        if (MySpaceRender.getDistance(greenTriangle.x, greenTriangle.y, MenuActivity.X / 2, MenuActivity.Y / 2) < 20 && runOnce){
             startBattle();
+            runOnce = false;
         }
     }
 

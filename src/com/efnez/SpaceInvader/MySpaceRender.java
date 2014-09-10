@@ -25,12 +25,21 @@ public class MySpaceRender {
     private int greenHealth = 0;
     private ConcurrentHashMap<Integer, Triangle> deadWarriors;
 
+    private int backgroundY = 0;
+    int backgroundImageSize = 1440;
+    private Bitmap background1;
+    private Bitmap background2;
+
     public MySpaceRender(MySpaceView view) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        background1 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars1);
+        background2 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars2);
         this.view = view;
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.BLACK);
-        greenTriangle = new GreenTriangleShip(MenuActivity.X / 2, MenuActivity.Y / 2);
+        greenTriangle = new GreenTriangleShip(MenuActivity.X / 2, MenuActivity.Y / 2); //TODO rewrite with intent
 
         deadWarriors = new ConcurrentHashMap<Integer, Triangle>();
         greenBullets = new ConcurrentHashMap<Integer, Triangle>();
@@ -38,30 +47,14 @@ public class MySpaceRender {
         warriors = new ConcurrentHashMap<Integer, Triangle>();
     }
 
-    public void addGreenBullet() {
-        greenBullets.put(greenBulletQuantity++, new GreenBullet(greenTriangle.x, greenTriangle.y));
-    }
-
-    public void addRedBullet(Float x, Float y) {
-        redBullets.put(redBulletQuantity++, new RedBullet(x, y));
-    }
-
-    public void addWarrior() {
-        warriors.put(warriorId++, new Warrior(getRandomFloat(0, view.getWidth()), 10));
-    }
-
-    public float getRandomFloat(float start, float end){
-        return (float) Math.random() * (start - end) + end;
-    }
-
     public void repaint(Canvas canvas) {
         this.canvas = canvas;
-        canvas.drawPaint(paint); //        TODO dont repaint font
+//        canvas.drawPaint(paint); //        TODO dont repaint font
+
+        redrawBackground();
 
         greenTriangle.x = view.getPosition().first; //      TODO rewrite with interface View.getX or with interface getPair
         greenTriangle.y = view.getPosition().second;
-//        greenTriangle.x = this.getCogetIntent().getIntExtra("X", view);
-
 
         drawTriangle(greenTriangle); //ship
         drawWarriors();
@@ -79,7 +72,36 @@ public class MySpaceRender {
         drawText(Color.GREEN, greenHealth+"", 10, view.getHeight() - 80);
     }
 
+    private void redrawBackground() {
+        int step = 3;
+        if (backgroundY < 3 * backgroundImageSize - step){
+            drawBackground(backgroundY);
+            backgroundY += step;
+        } else {
+            backgroundY = 0;
+            drawBackground(backgroundY);
+        }
+    }
 
+    private void drawBitmap(Bitmap bitmap, float y){
+        canvas.drawBitmap(bitmap, -400, y, paint);
+    }
+
+    private void drawBackground(float y) {
+        if (y < backgroundImageSize){
+            if (y < MenuActivity.Y){
+            drawBitmap(background1, y);}
+            drawBitmap(background2, y - backgroundImageSize);
+        } else if (backgroundImageSize <= y && y < 2 * backgroundImageSize){
+            if (y < backgroundImageSize + MenuActivity.Y){
+            drawBitmap(background2, y - backgroundImageSize);}
+            drawBitmap(background1, y - 2 * backgroundImageSize);
+        } else if (2 * backgroundImageSize <= y && y < 3 * backgroundImageSize){
+            if (y < 2 * backgroundImageSize + MenuActivity.Y){
+            drawBitmap(background1, y - 2 * backgroundImageSize);}
+            drawBitmap(background2, y - 3 * backgroundImageSize);
+        }
+    }
 
     private void minimizeTriangle(ConcurrentHashMap<Integer, Triangle> triangles, int i) {
         for (Integer integer : triangles.keySet()) {
@@ -92,7 +114,7 @@ public class MySpaceRender {
         }
     }
 
-    private void drawWarriors() { // todo move war and minimize on breake
+    private void drawWarriors() {
         for (Triangle warrior : warriors.values()) {
             drawTriangle(warrior);
         }
@@ -138,7 +160,7 @@ public class MySpaceRender {
         }
     }
 
-    private void checkCollision(){ //TODO find all collision and case by class destruction
+    private void checkCollision(){ //TODO find all collision and case destruction by class
 
     }
 
@@ -167,6 +189,21 @@ public class MySpaceRender {
         }
     }
 
+    public void addGreenBullet() {
+        greenBullets.put(greenBulletQuantity++, new GreenBullet(greenTriangle.x, greenTriangle.y));
+    }
+
+    public void addRedBullet(Float x, Float y) {
+        redBullets.put(redBulletQuantity++, new RedBullet(x, y));
+    }
+
+    public void addWarrior() {
+        warriors.put(warriorId++, new Warrior(getRandomFloat(0, view.getWidth()), 10));
+    }
+
+    public float getRandomFloat(float start, float end){
+        return (float) Math.random() * (start - end) + end;
+    }
 
     public static float getDistance(float ax, float ay, float bx, float by){
         return (float) Math.sqrt(Math.pow((ay - by), 2) + Math.pow(ax - bx, 2));

@@ -40,8 +40,6 @@ public class MySpaceView extends View {
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
-//                render.addGreenBullet();
-//                invalidate();
         }
         return true;
     }
