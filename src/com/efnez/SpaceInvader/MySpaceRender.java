@@ -9,33 +9,35 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MySpaceRender {
 
+    private Canvas canvas;
+    private MySpaceView view;
+    private Paint paint;
+
     private final ConcurrentHashMap<Integer, Triangle> warriors;
     private final ConcurrentHashMap<Integer, Triangle> redBullets;
     private ConcurrentHashMap<Integer, Triangle> greenBullets;
     private Triangle greenTriangle;
 
-    private Paint paint;
-    private MySpaceView view;
-
-    int greenBulletQuantity = 0;
-    int warriorId = 0;
+    private int greenBulletQuantity = 0;
+    private int warriorId = 0;
     private int deadWarriorId = 0;
     private int redBulletQuantity;
-    private Canvas canvas;
     private int greenHit = 0;
     private ConcurrentHashMap<Integer, Triangle> deadWarriors;
 
     private int backgroundY = 0;
-    int backgroundImageSize = 1440;
+    private int backgroundImageSize = 1440; //TODO remove
     private Bitmap background1;
     private Bitmap background2;
+
     private int myLevel = 1;
-    private boolean gameOver;
+    public boolean gameOver;
 
     public MySpaceRender(MySpaceView view) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        background1 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars1);
+        background1 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars1, options);
+        backgroundImageSize = options.outHeight;
         background2 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars2);
         this.view = view;
         paint = new Paint();
@@ -51,7 +53,7 @@ public class MySpaceRender {
 
     public void repaint(Canvas canvas) {
         this.canvas = canvas;
-        redrawBackground();
+//        redrawBackground();
 
         greenTriangle.x = view.getPosition().first; //      TODO rewrite with interface View.getX or with interface getPair
         greenTriangle.y = view.getPosition().second;
@@ -59,8 +61,8 @@ public class MySpaceRender {
         //TODO rewrite with getLevelConstant()
         drawTriangle(greenTriangle); //ship
         drawWarriors();
-        moveTriangles(greenBullets, getRedBulletSpeedByLevel());
-        moveTriangles(redBullets, 3);
+        moveTriangles(greenBullets, getGreenBulletSpeedByLevel());
+        moveTriangles(redBullets, getRedBulletSpeedByLevel());
         moveTriangles(warriors, 1);
         checkIntersection();
         checkGreenIntersection();
@@ -82,7 +84,11 @@ public class MySpaceRender {
     }
 
     private float getRedBulletSpeedByLevel() {
-        return -4 - myLevel;
+        return 2 + myLevel;
+    }
+
+    private float getGreenBulletSpeedByLevel() {
+        return -5;
     }
 
     private void redrawBackground() {
@@ -229,13 +235,11 @@ public class MySpaceRender {
     }
 
     public double getGreenHealth() {
-        double greenHealth = getGreenHealthByLevel() - greenHit;
-        return greenHealth;
+        return (double) (getGreenHealthByLevel() - greenHit);
     }
 
     public double getRedHealth() {
-        double redHealth = getRedHealthByLevel() - deadWarriorId;
-        return redHealth;
+        return (double) (getRedHealthByLevel() - deadWarriorId);
     }
 
     private float getNormalizeHealth(double currentHealth, int levelHealth){
@@ -243,14 +247,19 @@ public class MySpaceRender {
     }
 
     private int getRedHealthByLevel() {
-        return myLevel * 100; //TODO remove this shit
+        return myLevel * MyConstant.defaultWarriorQuantityOnLevel; //TODO remove this shit
     }
 
     private int getWarriorsByLevel() {
-        return 5 + myLevel;
+        return MyConstant.minWarriorQuantityOnLevel + myLevel;
     }
+
+    public int getMyLevel() {
+        return myLevel;
+    }
+
     private int getGreenHealthByLevel() {
-        int health = 20 - myLevel;
+        int health = MyConstant.startGreenHealth - myLevel;
         return health > 1 ? health : 1; //TODO remove this shit
     }
 

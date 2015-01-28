@@ -1,7 +1,6 @@
 package com.efnez.SpaceInvader;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.*;
 import android.util.Pair;
@@ -16,19 +15,19 @@ public class MySpaceView extends View {
     private float x;
     private float y;
     public static Resources resources;
-    public MySpaceRender render;
+    public MySpaceRender mySpaceRender;
 
     public MySpaceView(Context context) {
         super(context);
         resources = getResources();
-        render = new MySpaceRender(this);
+        mySpaceRender = new MySpaceRender(this);
         setPosition(MenuActivity.X / 2, MenuActivity.Y / 2);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        render.repaint(canvas);
+        mySpaceRender.repaint(canvas);
     }
 
     @Override
@@ -51,6 +50,14 @@ public class MySpaceView extends View {
 
     public Pair<Float, Float> getPosition(){
         return new Pair<Float, Float>(x, y);
+    }
+
+    public boolean getGameOver() {
+        return mySpaceRender.gameOver;
+    }
+
+    public int getLevel(){
+        return mySpaceRender.getMyLevel();
     }
 
 }

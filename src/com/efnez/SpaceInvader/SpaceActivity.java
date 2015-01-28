@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 
 /**
  * Created with IntelliJ IDEA.
@@ -18,11 +16,12 @@ public class SpaceActivity extends Activity {
     public static int Y;
     private MySpaceView mySpaceView;
     private Handler handler = new Handler();
-    long fps = 60 * 2; //Wait in two times longer
+    long fps = MyConstant.fps; //Wait in two times longer
     long lastGreenFire = System.currentTimeMillis();
     private boolean isPlaying;
     private long now;
     private long lastRedFire;
+    private int previousLevel = 1;
 
 
     @Override
@@ -31,10 +30,8 @@ public class SpaceActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                WindowManager.LayoutParams.FLAG_FULLSCREEN); //TODO may not work API level
 
-        // Create a instance and set it
-        // as the ContentView for this Activity.
         Intent intent = getIntent();
         mySpaceView = new MySpaceView(this);
         setContentView(mySpaceView);
@@ -55,22 +52,30 @@ public class SpaceActivity extends Activity {
                 now = System.currentTimeMillis();
                 addBullet();
 
+                isPlaying = ! mySpaceView.getGameOver();
+
                 if (isPlaying){
-                    handler.postDelayed(this, 1000 / fps);
+//                    System.out.println("pr " + previousLevel + " cur " + mySpaceView.getLevel());
+                    if (previousLevel < mySpaceView.getLevel()){ //TODO not work
+                        previousLevel = mySpaceView.getLevel();
+                        handler.postDelayed(this, MyConstant.defaultDelay * MyConstant.defaultLevelDelay);
+                    } else {
+                        handler.postDelayed(this, MyConstant.defaultDelay / fps);
+                    }
                 }
             }
         };
 
-        handler.postDelayed(loop, 1000 / fps);
+        handler.postDelayed(loop, MyConstant.defaultDelay / fps);
     }
 
     private void addBullet() {
         if (now - lastGreenFire > GreenBullet.ttl){
-            mySpaceView.render.addGreenBullet();
+            mySpaceView.mySpaceRender.addGreenBullet();
             lastGreenFire = now;
         }
         if (now - lastRedFire > RedBullet.ttl){
-            mySpaceView.render.addRedBullets();
+            mySpaceView.mySpaceRender.addRedBullets();
             lastRedFire = now;
         }
     }
