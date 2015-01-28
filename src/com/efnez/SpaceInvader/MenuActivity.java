@@ -61,6 +61,7 @@ class MenuView extends View{
     Triangle greenTriangle;
     Intent intent = new Intent(this.getContext(), SpaceActivity.class);
     Bitmap background1;
+    boolean runOnce = true;
 
     public MenuView(Context context, int X, int Y) {
         super(context);
@@ -71,16 +72,22 @@ class MenuView extends View{
         intent.putExtra("x", X);
         intent.putExtra("y", Y);
     }
-    boolean runOnce = true;
 
     @Override
     protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-        canvas.drawBitmap(background1, -400, 0, greenTriangle.trianglePainter);
+        if (runOnce) {
+            super.onDraw(canvas);
+            canvas.drawBitmap(background1, -400, 0, greenTriangle.trianglePainter);
 
-        canvas.drawPath(greenTriangle.drawTriangle(), greenTriangle.trianglePainter);
-        canvas.drawPath(setGreenAim(MenuActivity.X / 2, MenuActivity.Y / 2), getPointer());
+            canvas.drawPath(greenTriangle.drawTriangle(), greenTriangle.trianglePainter);
+            canvas.drawPath(setGreenAim(MenuActivity.X / 2, MenuActivity.Y / 2), getPointer());
+            isInAim();
+        }
+    }
+
+    private void isInAim() {
         if (MySpaceRender.getDistance(greenTriangle.x, greenTriangle.y, MenuActivity.X / 2, MenuActivity.Y / 2) < 20 && runOnce){
+
             startBattle();
             runOnce = false;
         }
@@ -98,7 +105,8 @@ class MenuView extends View{
 
     private Path setGreenAim(int x, int y){
         Path triangle;
-        float triangleLength = 120;
+        float triangleLength = MyConstant.defaultTriangleAimLength;
+//        float triangleLength = Con;
         Point a = new Point((int) (x - triangleLength / 2), (int) (y + triangleLength / 2));
         Point b = new Point((int) (x + triangleLength / 2), (int) (y + triangleLength / 2));
         Point c = new Point((int) x, (int) (y - triangleLength / 2));

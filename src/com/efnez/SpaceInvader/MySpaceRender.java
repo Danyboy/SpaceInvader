@@ -120,13 +120,6 @@ public class MySpaceRender {
         }
     }
 
-    private void drawText(int color, String text, float x, float y) {
-        paint.setColor(color);
-        paint.setTextSize(100);
-        canvas.drawText(text, x, y, paint);
-        paint.setColor(Color.BLACK);
-    }
-
     public void addRedBullets(){
         for (Triangle warrior : warriors.values()) {
             addRedBullet(warrior.x, warrior.y);
@@ -199,6 +192,20 @@ public class MySpaceRender {
 
     public void addWarrior() {
         warriors.put(warriorId++, new Warrior(getRandomFloat(0, view.getWidth()), 10));
+    }
+
+    private void drawText(int color, String text, float x, float y) {
+        paint.setColor(color);
+        paint.setTextSize(100);
+        canvas.drawText(text, x, y, paint);
+        paint.setColor(Color.BLACK);
+    }
+
+    private void drawLine(int color, String text, float x, float y) {
+        paint.setColor(color);
+        paint.setTextSize(100);
+        canvas.drawText(text, x, y, paint);
+        paint.setColor(Color.BLACK);
     }
 
     public float getRandomFloat(float start, float end){

@@ -9,7 +9,7 @@ import android.graphics.Color;
 */
 public abstract class Bullet extends Triangle {
     public long ttl;
-    public static float bulletLength = 10; //TODO change with display width
+    public static float bulletLength = MyConstant.defaultBulletLength; //TODO change with display width
 
     public Bullet(int color, long ttl, float x, float y) {
         super(color, bulletLength, x, y);

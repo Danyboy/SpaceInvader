@@ -9,7 +9,7 @@ import android.graphics.Point;
  */
 public class Warrior extends Triangle {
     public boolean isAlive = true;
-    private static float warriorLength = 50;
+    private static float warriorLength = MyConstant.defaultWarriorLength;
 
     public Warrior(float x, float y) {
         super(Color.RED, warriorLength, x, y);

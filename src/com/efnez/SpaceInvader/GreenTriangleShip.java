@@ -9,7 +9,7 @@ import android.graphics.Point;
  * Created by Dany on 08.05.14.
  */
 public class GreenTriangleShip extends Triangle {
-    public static float triangleLength = 100;
+    public static float triangleLength = MyConstant.defaultTriangleLength;   // TODO rewrite with coef
 
     public GreenTriangleShip(float x, float y){
         super(Color.GREEN, triangleLength, x, y);
