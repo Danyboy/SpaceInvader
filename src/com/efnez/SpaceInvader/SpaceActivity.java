@@ -16,12 +16,13 @@ public class SpaceActivity extends Activity {
     public static int Y;
     private MySpaceView mySpaceView;
     private Handler handler = new Handler();
-    long fps = MyConstant.fps; //Wait in two times longer
     long lastGreenFire = System.currentTimeMillis();
     private boolean isPlaying;
     private long now;
     private long lastRedFire;
     private int previousLevel = 1;
+    private long defaultDelay = MyConstant.oneSecond / MyConstant.fps;
+    private long delay = defaultDelay;
 
 
     @Override
@@ -54,19 +55,21 @@ public class SpaceActivity extends Activity {
 
                 isPlaying = ! mySpaceView.getGameOver();
 
+                if (previousLevel < mySpaceView.getLevel()){ //TODO not work
+                    previousLevel = mySpaceView.getLevel();
+                    delay = MyConstant.oneSecond * MyConstant.defaultLevelDelay;
+                } else {
+                    delay = defaultDelay;
+                }
+
                 if (isPlaying){
 //                    System.out.println("pr " + previousLevel + " cur " + mySpaceView.getLevel());
-                    if (previousLevel < mySpaceView.getLevel()){ //TODO not work
-                        previousLevel = mySpaceView.getLevel();
-                        handler.postDelayed(this, MyConstant.defaultDelay * MyConstant.defaultLevelDelay);
-                    } else {
-                        handler.postDelayed(this, MyConstant.defaultDelay / fps);
-                    }
+                        handler.postDelayed(this, delay);
                 }
             }
         };
 
-        handler.postDelayed(loop, MyConstant.defaultDelay / fps);
+        handler.postDelayed(loop, delay);
     }
 
     private void addBullet() {
