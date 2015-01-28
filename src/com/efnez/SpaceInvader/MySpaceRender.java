@@ -22,13 +22,15 @@ public class MySpaceRender {
     private int deadWarriorId = 0;
     private int redBulletQuantity;
     private Canvas canvas;
-    private int greenHealth = 0;
+    private int greenHit = 0;
     private ConcurrentHashMap<Integer, Triangle> deadWarriors;
 
     private int backgroundY = 0;
     int backgroundImageSize = 1440;
     private Bitmap background1;
     private Bitmap background2;
+    private int myLevel = 1;
+    private boolean gameOver;
 
     public MySpaceRender(MySpaceView view) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -49,16 +51,15 @@ public class MySpaceRender {
 
     public void repaint(Canvas canvas) {
         this.canvas = canvas;
-//        canvas.drawPaint(paint); //        TODO dont repaint font
-
         redrawBackground();
 
         greenTriangle.x = view.getPosition().first; //      TODO rewrite with interface View.getX or with interface getPair
         greenTriangle.y = view.getPosition().second;
 
+        //TODO rewrite with getLevelConstant()
         drawTriangle(greenTriangle); //ship
         drawWarriors();
-        moveTriangles(greenBullets, -5);
+        moveTriangles(greenBullets, getRedBulletSpeedByLevel());
         moveTriangles(redBullets, 3);
         moveTriangles(warriors, 1);
         checkIntersection();
@@ -68,8 +69,20 @@ public class MySpaceRender {
         moveTriangles(deadWarriors, 0);
 
         addWarriors();
-        drawText(Color.RED, deadWarriorId + "", 10, 80);
-        drawText(Color.GREEN, greenHealth+"", 10, view.getHeight() - 80);
+
+        drawLine(Color.RED, (view.getWidth() * getNormalizeHealth(getRedHealth(), getRedHealthByLevel())),
+                MyConstant.defaultBulletLength);
+        drawLine(Color.GREEN, (view.getWidth() * getNormalizeHealth(getGreenHealth(), getGreenHealthByLevel())),
+                view.getHeight() - MyConstant.defaultBulletLength);
+//        drawText(Color.RED, deadWarriorId + "", 10, 80);
+//        drawText(Color.GREEN, greenHit + "", 10, view.getHeight() - 80);
+
+        checkGameOver();
+        checkLevelComplete();
+    }
+
+    private float getRedBulletSpeedByLevel() {
+        return -4 - myLevel;
     }
 
     private void redrawBackground() {
@@ -147,7 +160,7 @@ public class MySpaceRender {
 
     private void addWarriors() {
         if (warriors.isEmpty() || warriors.size() < 5){
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < getWarriorsByLevel(); i++) {
                 addWarrior();
             }
         }
@@ -177,7 +190,7 @@ public class MySpaceRender {
             if (getDistance(bullet.x, bullet.y, greenTriangle.x, greenTriangle.y) <
                 bullet.getLength() / 2 + greenTriangle.getLength() / 2){
                     redBullets.remove(integer);
-                    greenHealth++;
+                    greenHit++;
             }
         }
     }
@@ -196,15 +209,14 @@ public class MySpaceRender {
 
     private void drawText(int color, String text, float x, float y) {
         paint.setColor(color);
-        paint.setTextSize(100);
+        paint.setTextSize(MyConstant.defaultTriangleLength);
         canvas.drawText(text, x, y, paint);
         paint.setColor(Color.BLACK);
     }
 
-    private void drawLine(int color, String text, float x, float y) {
+    private void drawLine(int color, float x, float y) {
         paint.setColor(color);
-        paint.setTextSize(100);
-        canvas.drawText(text, x, y, paint);
+        canvas.drawLine(0, y, x, y, paint);
         paint.setColor(Color.BLACK);
     }
 
@@ -216,5 +228,45 @@ public class MySpaceRender {
         return (float) Math.sqrt(Math.pow((ay - by), 2) + Math.pow(ax - bx, 2));
     }
 
+    public double getGreenHealth() {
+        double greenHealth = getGreenHealthByLevel() - greenHit;
+        return greenHealth;
+    }
 
+    public double getRedHealth() {
+        double redHealth = getRedHealthByLevel() - deadWarriorId;
+        return redHealth;
+    }
+
+    private float getNormalizeHealth(double currentHealth, int levelHealth){
+        return (float) (currentHealth / (double)levelHealth);
+    }
+
+    private int getRedHealthByLevel() {
+        return myLevel * 100; //TODO remove this shit
+    }
+
+    private int getWarriorsByLevel() {
+        return 5 + myLevel;
+    }
+    private int getGreenHealthByLevel() {
+        int health = 20 - myLevel;
+        return health > 1 ? health : 1; //TODO remove this shit
+    }
+
+    private void checkLevelComplete(){
+        if (getRedHealth() <= 0){
+            deadWarriorId = 0; //TODO check it that nothing broke
+            greenHit = 0;
+            myLevel++;
+            drawText(Color.GREEN, "Level " + myLevel + " complete!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
+        }
+    }
+
+    private void checkGameOver(){
+        if (getGreenHealth() <= 0) {
+            drawText(Color.RED, "Game over!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
+            gameOver = true;
+        }
+    }
 }
