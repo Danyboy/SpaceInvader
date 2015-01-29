@@ -33,12 +33,15 @@ public class MySpaceRender {
     private int myLevel = 1;
     public boolean gameOver;
 
+    private boolean nextLevel = false;
+
     public MySpaceRender(MySpaceView view) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         background1 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars1, options);
         backgroundImageSize = options.outHeight;
         background2 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars2);
+
         this.view = view;
         paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
@@ -222,6 +225,7 @@ public class MySpaceRender {
 
     private void drawLine(int color, float x, float y) {
         paint.setColor(color);
+        paint.setStrokeWidth(MyConstant.defaultBulletLength);
         canvas.drawLine(0, y, x, y, paint);
         paint.setColor(Color.BLACK);
     }
@@ -263,11 +267,20 @@ public class MySpaceRender {
         return health > 1 ? health : 1; //TODO remove this shit
     }
 
+    public void setNextLevel(boolean nextLevel) {
+        this.nextLevel = nextLevel;
+    }
+
+    public boolean isNextLevel() {
+        return nextLevel;
+    }
+
     private void checkLevelComplete(){
         if (getRedHealth() <= 0){
             deadWarriorId = 0; //TODO check it that nothing broke
             greenHit = 0;
             myLevel++;
+            nextLevel = true;
             drawText(Color.GREEN, "Level " + myLevel + " complete!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
         }
     }
@@ -275,6 +288,11 @@ public class MySpaceRender {
     private void checkGameOver(){
         if (getGreenHealth() <= 0) {
             drawText(Color.RED, "Game over!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
+            drawText(Color.GREEN, "You score "
+                            + (int) (((myLevel - 1) * (myLevel) / 2) * MyConstant.minWarriorQuantityOnLevel + getRedHealth())
+                            + "",
+                    MyConstant.defaultWarriorLength,
+                    view.getHeight() / 2 + MyConstant.defaultWarriorQuantityOnLevel * 3);
             gameOver = true;
         }
     }

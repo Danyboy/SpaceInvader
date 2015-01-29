@@ -23,6 +23,7 @@ public class SpaceActivity extends Activity {
     private int previousLevel = 1;
     private long defaultDelay = MyConstant.oneSecond / MyConstant.fps;
     private long delay = defaultDelay;
+    private boolean isNextLevel;
 
 
     @Override
@@ -49,11 +50,18 @@ public class SpaceActivity extends Activity {
         Runnable loop = new Runnable() {
             @Override
             public void run() {
+
+                isNextLevel = mySpaceView.mySpaceRender.isNextLevel();
+                if (isNextLevel){
+                    mySpaceView.mySpaceRender.setNextLevel(false);
+                    handler.postDelayed(this, MyConstant.oneSecond * MyConstant.defaultLevelDelay);
+                }
+
                 mySpaceView.invalidate();
                 now = System.currentTimeMillis();
                 addBullet();
 
-                isPlaying = ! mySpaceView.getGameOver();
+                isPlaying = ! mySpaceView.mySpaceRender.gameOver;
 
                 if (previousLevel < mySpaceView.getLevel()){ //TODO not work
                     previousLevel = mySpaceView.getLevel();
@@ -62,7 +70,7 @@ public class SpaceActivity extends Activity {
                     delay = defaultDelay;
                 }
 
-                if (isPlaying){
+                if (isPlaying && ! isNextLevel){
 //                    System.out.println("pr " + previousLevel + " cur " + mySpaceView.getLevel());
                         handler.postDelayed(this, delay);
                 }
