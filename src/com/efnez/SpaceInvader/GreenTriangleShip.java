@@ -12,7 +12,7 @@ public class GreenTriangleShip extends Triangle {
     public static float triangleLength = MyConstant.defaultTriangleLength;   // TODO rewrite with coef
 
     public GreenTriangleShip(float x, float y){
-        super(Color.GREEN, triangleLength, x, y);
+        super(MyConstant.myGreen, triangleLength, x, y);
     }
 
     @Override

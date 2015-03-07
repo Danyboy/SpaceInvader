@@ -75,12 +75,12 @@ public class MySpaceRender {
 
         addWarriors();
 
-        drawLine(Color.RED, (view.getWidth() * getNormalizeHealth(getRedHealth(), getRedHealthByLevel())),
+        drawLine(MyConstant.myRed, (view.getWidth() * getNormalizeHealth(getRedHealth(), getRedHealthByLevel())),
                 MyConstant.defaultBulletLength);
-        drawLine(Color.GREEN, (view.getWidth() * getNormalizeHealth(getGreenHealth(), getGreenHealthByLevel())),
+        drawLine(MyConstant.myGreen, (view.getWidth() * getNormalizeHealth(getGreenHealth(), getGreenHealthByLevel())),
                 view.getHeight() - MyConstant.defaultBulletLength);
-//        drawText(Color.RED, deadWarriorId + "", 10, 80);
-//        drawText(Color.GREEN, greenHit + "", 10, view.getHeight() - 80);
+//        drawText(MyConstant.myRed, deadWarriorId + "", 10, 80);
+//        drawText(MyConstant.myGreen, greenHit + "", 10, view.getHeight() - 80);
 
         checkGameOver();
         checkLevelComplete();
@@ -281,14 +281,14 @@ public class MySpaceRender {
             greenHit = 0;
             myLevel++;
             nextLevel = true;
-            drawText(Color.GREEN, "Level " + myLevel + " complete!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
+            drawText(MyConstant.myGreen, "Level " + myLevel + " complete!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
         }
     }
 
     private void checkGameOver(){
         if (getGreenHealth() <= 0) {
-            drawText(Color.RED, "Game over!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
-            drawText(Color.GREEN, "You score "
+            drawText(MyConstant.myRed, "Game over!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
+            drawText(MyConstant.myGreen, "You score "
                             + (int) (((myLevel - 1) * (myLevel) / 2) * MyConstant.minWarriorQuantityOnLevel + getRedHealth())
                             + "",
                     MyConstant.defaultWarriorLength,

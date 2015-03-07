@@ -19,6 +19,8 @@ public class MyConstant {
     public static int defaultWarriorQuantityOnLevel = 50;
     public static int minWarriorQuantityOnLevel = 4;
     public static int startGreenHealth = 21;
-//    public static Color myGreen =
+    public static int myRed = Color.parseColor("#F44336");
+    public static int myGreen = Color.parseColor("#4CAF50");
+//    public static int myGreen = Color.parseColor("#F44336");
 
 }

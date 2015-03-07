@@ -11,7 +11,7 @@ public class GreenBullet extends Bullet {
     public static long ttl = 250L;
 
     public GreenBullet(float x, float y) {
-        super(Color.GREEN, ttl, x, y);
+        super(MyConstant.myGreen, ttl, x, y);
     }
 
     @Override

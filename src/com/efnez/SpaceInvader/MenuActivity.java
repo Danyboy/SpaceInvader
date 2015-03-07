@@ -97,7 +97,7 @@ class MenuView extends View{
         Paint trianglePainter = new Paint();
 
         trianglePainter.setStrokeWidth(4);
-        trianglePainter.setColor(Color.GREEN);
+        trianglePainter.setColor(MyConstant.myGreen);
         trianglePainter.setStyle(Paint.Style.STROKE);
         trianglePainter.setAntiAlias(true);
         return trianglePainter;

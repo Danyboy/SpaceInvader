@@ -12,7 +12,7 @@ public class Warrior extends Triangle {
     private static float warriorLength = MyConstant.defaultWarriorLength;
 
     public Warrior(float x, float y) {
-        super(Color.RED, warriorLength, x, y);
+        super(MyConstant.myRed, warriorLength, x, y);
     }
 
     @Override
