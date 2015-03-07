@@ -1,5 +1,7 @@
 package com.efnez.SpaceInvader;
 
+import android.graphics.Color;
+
 /**
  * Created by Dany on 28.01.2015
  */
@@ -17,4 +19,6 @@ public class MyConstant {
     public static int defaultWarriorQuantityOnLevel = 50;
     public static int minWarriorQuantityOnLevel = 4;
     public static int startGreenHealth = 21;
+//    public static Color myGreen =
+
 }
