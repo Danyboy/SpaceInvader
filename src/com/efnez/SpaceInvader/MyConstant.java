@@ -11,7 +11,7 @@ public class MyConstant {
 
     public static float defaultBulletLength = X / 72;
     public static float defaultTriangleLength = defaultBulletLength * 10;
-    public static float defaultTriangleAimLength = defaultTriangleLength * 1.4F;
+    public static float defaultTriangleAimLength = defaultTriangleLength * 2F;
     public static float defaultWarriorLength = defaultBulletLength * 5;
     public static long fps = 30 * 2;  //Wait in two times longer
     public static long oneSecond = 1000;
@@ -19,8 +19,8 @@ public class MyConstant {
     public static int defaultWarriorQuantityOnLevel = 50;
     public static int minWarriorQuantityOnLevel = 4;
     public static int startGreenHealth = 21;
-    public static int myRed = Color.parseColor("#F44336");
-    public static int myGreen = Color.parseColor("#4CAF50");
+    public static int myRed = Color.parseColor("#F44336"); //Red from lolipop
+    public static int myGreen = Color.parseColor("#4CAF50"); //Green
 //    public static int myGreen = Color.parseColor("#F44336");
 
 }

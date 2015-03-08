@@ -12,8 +12,9 @@ import android.view.WindowManager;
  * User: Dany
  */
 public class SpaceActivity extends Activity {
-    public static int X;
-    public static int Y;
+    static final String STATE_SCORE = "playerScore";
+    static final String STATE_LEVEL = "playerLevel";
+
     private MySpaceView mySpaceView;
     private Handler handler = new Handler();
     long lastGreenFire = System.currentTimeMillis();
@@ -30,12 +31,18 @@ public class SpaceActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         isPlaying = true;
         super.onCreate(savedInstanceState);
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN); //TODO may not work API level
 
         Intent intent = getIntent();
         mySpaceView = new MySpaceView(this);
+        //Restoring saved level
+        if (savedInstanceState != null) {
+            mySpaceView.mySpaceRender.myLevel = savedInstanceState.getInt(STATE_LEVEL);
+        }
+
         setContentView(mySpaceView);
         addEvent();
         gameLoop();
@@ -63,8 +70,8 @@ public class SpaceActivity extends Activity {
 
                 isPlaying = ! mySpaceView.mySpaceRender.gameOver;
 
-                if (previousLevel < mySpaceView.getLevel()){ //TODO not work
-                    previousLevel = mySpaceView.getLevel();
+                if (previousLevel < mySpaceView.mySpaceRender.getMyLevel()){ //TODO not work
+                    previousLevel = mySpaceView.mySpaceRender.getMyLevel();
                     delay = MyConstant.oneSecond * MyConstant.defaultLevelDelay;
                 } else {
                     delay = defaultDelay;
@@ -108,12 +115,25 @@ public class SpaceActivity extends Activity {
         // this is a good place to re-allocate them.
         super.onResume();
         isPlaying = true;
-        gameLoop();
+//        onCreate(null);
+
+//        gameLoop();
     }
 
     @Override
     public void onBackPressed() {
 //        Intent intent = new Intent(this, SpaceActivity.class);
 //        startActivity(intent);
+//        TODO start PauseActivity
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        // Save the user's current game state
+        savedInstanceState.putInt(STATE_SCORE, mySpaceView.mySpaceRender.getScore());
+        savedInstanceState.putInt(STATE_LEVEL, mySpaceView.mySpaceRender.getMyLevel());
+
+        // Always call the superclass so it can save the view hierarchy state
+        super.onSaveInstanceState(savedInstanceState);
     }
 }

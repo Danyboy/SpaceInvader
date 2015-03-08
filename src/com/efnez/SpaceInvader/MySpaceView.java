@@ -51,13 +51,4 @@ public class MySpaceView extends View {
     public Pair<Float, Float> getPosition(){
         return new Pair<Float, Float>(x, y);
     }
-
-    public boolean getGameOver() {
-        return mySpaceRender.gameOver;
-    }
-
-    public int getLevel(){
-        return mySpaceRender.getMyLevel();
-    }
-
 }

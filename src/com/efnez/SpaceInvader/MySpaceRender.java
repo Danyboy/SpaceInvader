@@ -16,6 +16,7 @@ public class MySpaceRender {
     private final ConcurrentHashMap<Integer, Triangle> warriors;
     private final ConcurrentHashMap<Integer, Triangle> redBullets;
     private ConcurrentHashMap<Integer, Triangle> greenBullets;
+    private ConcurrentHashMap<Integer, Triangle> deadWarriors;
     private Triangle greenTriangle;
 
     private int greenBulletQuantity = 0;
@@ -23,14 +24,13 @@ public class MySpaceRender {
     private int deadWarriorId = 0;
     private int redBulletQuantity;
     private int greenHit = 0;
-    private ConcurrentHashMap<Integer, Triangle> deadWarriors;
 
     private int backgroundY = 0;
     private int backgroundImageSize = 1440; //TODO remove
     private Bitmap background1;
     private Bitmap background2;
 
-    private int myLevel = 1;
+    public int myLevel = 1;
     public boolean gameOver;
 
     private boolean nextLevel = false;
@@ -154,7 +154,7 @@ public class MySpaceRender {
             drawTriangle(triangle);
             triangle.y += step;
             if (! isInBorder(triangle.x, triangle.y)){
-                triangles.remove(integer);
+                triangles.remove(integer); // TODO check that it work
             }
         }
     }
@@ -186,7 +186,7 @@ public class MySpaceRender {
                 if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
                         bullet.getLength() / 2 + warrior.getLength() / 2){
                     deadWarriors.put(deadWarriorId, warriors.get(id));
-                    warriors.remove(id);
+                    warriors.remove(id); //TODO rewrite with iterator remove
                     deadWarriorId++;
                 }
             }
@@ -289,11 +289,15 @@ public class MySpaceRender {
         if (getGreenHealth() <= 0) {
             drawText(MyConstant.myRed, "Game over!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
             drawText(MyConstant.myGreen, "You score "
-                            + (int) (((myLevel - 1) * (myLevel) / 2) * MyConstant.minWarriorQuantityOnLevel + getRedHealth())
+                            + getScore()
                             + "",
                     MyConstant.defaultWarriorLength,
                     view.getHeight() / 2 + MyConstant.defaultWarriorQuantityOnLevel * 3);
             gameOver = true;
         }
+    }
+
+    public int getScore() {
+        return (int) (((myLevel - 1) * (myLevel) / 2) * MyConstant.minWarriorQuantityOnLevel + getRedHealth());
     }
 }
