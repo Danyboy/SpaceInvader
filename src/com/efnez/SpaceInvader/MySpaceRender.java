@@ -75,12 +75,9 @@ public class MySpaceRender {
 
         addWarriors();
 
-        drawLine(MyConstant.myRed, (view.getWidth() * getNormalizeHealth(getRedHealth(), getRedHealthByLevel())),
-                MyConstant.defaultBulletLength);
-        drawLine(MyConstant.myGreen, (view.getWidth() * getNormalizeHealth(getGreenHealth(), getGreenHealthByLevel())),
-                view.getHeight() - MyConstant.defaultBulletLength);
-//        drawText(MyConstant.myRed, deadWarriorId + "", 10, 80);
-//        drawText(MyConstant.myGreen, greenHit + "", 10, view.getHeight() - 80);
+        drawWarriorHealth();
+        drawGreenHealth();
+        drawCurrentScore();
 
         checkGameOver();
         checkLevelComplete();
@@ -168,7 +165,7 @@ public class MySpaceRender {
     }
 
     private void addWarriors() {
-        if (warriors.isEmpty() || warriors.size() < 5){
+        if (warriors.isEmpty() || warriors.size() < getWarriorsByLevel()){
             for (int i = 0; i < getWarriorsByLevel(); i++) {
                 addWarrior();
             }
@@ -275,29 +272,57 @@ public class MySpaceRender {
         return nextLevel;
     }
 
+    int myOneStepHack = 0;
     private void checkLevelComplete(){
-        if (getRedHealth() <= 0){
+        if (myOneStepHack == 1){
+            myOneStepHack = 0;
+            drawNextLevelMessage();
+        }
+        if (getRedHealth() <= 0 ){
+            myOneStepHack = 1;
             deadWarriorId = 0; //TODO check it that nothing broke
             greenHit = 0;
+            drawNextLevelMessage();
             myLevel++;
             nextLevel = true;
-            drawText(MyConstant.myGreen, "Level " + myLevel + " complete!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
         }
     }
 
     private void checkGameOver(){
         if (getGreenHealth() <= 0) {
             drawText(MyConstant.myRed, "Game over!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
-            drawText(MyConstant.myGreen, "You score "
-                            + getScore()
-                            + "",
-                    MyConstant.defaultWarriorLength,
-                    view.getHeight() / 2 + MyConstant.defaultWarriorQuantityOnLevel * 3);
+            drawScore();
             gameOver = true;
         }
     }
 
     public int getScore() {
-        return (int) (((myLevel - 1) * (myLevel) / 2) * MyConstant.minWarriorQuantityOnLevel + getRedHealth());
+        return (((myLevel - 1) * (myLevel) / 2) * MyConstant.defaultWarriorQuantityOnLevel + deadWarriorId);
+    }
+
+    private void drawNextLevelMessage() {
+        drawText(MyConstant.myGreen, "Level " + (myLevel - 1) + " complete!", MyConstant.defaultWarriorLength, view.getHeight() / 2);
+        drawScore();
+    }
+
+    private void drawScore() {
+        drawText(MyConstant.myGreen, "You score " + getScore() + "",
+                MyConstant.defaultWarriorLength,
+                view.getHeight() / 2 + 2 * MyConstant.defaultWarriorLength);
+    }
+
+    private void drawCurrentScore() {
+        drawText(MyConstant.myRed, getScore() + "", MyConstant.defaultWarriorLength,
+                2 * MyConstant.defaultWarriorLength);
+    }
+
+    private void drawGreenHealth() {
+        drawLine(MyConstant.myGreen, (view.getWidth() * getNormalizeHealth(getGreenHealth(), getGreenHealthByLevel())),
+                view.getHeight() - MyConstant.defaultBulletLength);
+    }
+
+    private void drawWarriorHealth() {
+        drawLine(MyConstant.myRed, (view.getWidth() * getNormalizeHealth(getRedHealth(), getRedHealthByLevel())),
+                MyConstant.defaultBulletLength);
     }
 }

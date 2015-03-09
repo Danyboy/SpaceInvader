@@ -15,7 +15,7 @@ public class MyConstant {
     public static float defaultWarriorLength = defaultBulletLength * 5;
     public static long fps = 30 * 2;  //Wait in two times longer
     public static long oneSecond = 1000;
-    public static long defaultLevelDelay = 2;
+    public static long defaultLevelDelay = 1;
     public static int defaultWarriorQuantityOnLevel = 50;
     public static int minWarriorQuantityOnLevel = 4;
     public static int startGreenHealth = 21;
