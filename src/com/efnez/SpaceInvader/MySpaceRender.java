@@ -312,7 +312,7 @@ public class MySpaceRender {
     }
 
     private void drawCurrentScore() {
-        drawText(MyConstant.myRed, getScore() + "", MyConstant.defaultWarriorLength,
+        drawText(MyConstant.myRed, getScore() + "", MyConstant.defaultBulletLength,
                 2 * MyConstant.defaultWarriorLength);
     }
 
