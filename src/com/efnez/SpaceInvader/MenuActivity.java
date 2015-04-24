@@ -86,7 +86,8 @@ class MenuView extends View{
     }
 
     private void isInAim() {
-        if (MySpaceRender.getDistance(greenTriangle.x, greenTriangle.y, MenuActivity.X / 2, MenuActivity.Y / 2) < 20 && runOnce){
+        if (MySpaceRender.getDistance(greenTriangle.x, greenTriangle.y, MenuActivity.X / 2, MenuActivity.Y / 2)
+                < MyConstant.defaultTriangleAimLength / 2 && runOnce){
 
             startBattle();
             runOnce = false;
