@@ -1,5 +1,7 @@
 package com.efnez.SpaceInvader;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.*;
 import android.net.nsd.NsdManager;
 import android.os.Handler;
@@ -41,12 +43,12 @@ public class MySpaceRender {
 
     private boolean nextLevel = false;
 
-    PlayerConnection mConnection;
     NsdHelper mNsdHelper;
     private Handler mUpdateHandler;
+    PlayerConnection mConnection;
     private GreenTriangleShip playerTriangle;
 
-    public MySpaceRender(MySpaceView view) {
+    public MySpaceRender(MySpaceView view, Context context) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         background1 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars1, options);
@@ -64,8 +66,12 @@ public class MySpaceRender {
         redBullets = new ConcurrentHashMap<Integer, Triangle>();
         warriors = new ConcurrentHashMap<Integer, Triangle>();
 
-        clickAdvertise(view);
-        updatePositionHandler();
+        playerTriangle = new GreenTriangleShip(MenuActivity.X, MenuActivity.Y); //TODO rewrite with intent
+//        mConnection = new PlayerConnection(mUpdateHandler);
+//        mNsdHelper = new NsdHelper(context);
+//        mNsdHelper.initializeNsd();
+//        clickAdvertise(view);
+//        updatePositionHandler();
     }
 
     private void updatePositionHandler() {
@@ -80,7 +86,8 @@ public class MySpaceRender {
     }
 
     private void updatePlayerPosition(Float x, Float y) {
-        playerTriangle = new GreenTriangleShip(x, y);
+        playerTriangle.x = x;
+        playerTriangle.y = y;
     }
 
     public void clickAdvertise(View v) {
@@ -103,7 +110,11 @@ public class MySpaceRender {
 
         //TODO rewrite with getLevelConstant()
         drawTriangle(greenTriangle); //ship
-        drawTriangle(playerTriangle); //ship
+
+        if (playerTriangle != null){ //TODO added list of players
+            drawTriangle(playerTriangle); //ship
+        }
+
         drawWarriors();
         moveTriangles(greenBullets, getGreenBulletSpeedByLevel());
         moveTriangles(redBullets, getRedBulletSpeedByLevel());
@@ -123,7 +134,7 @@ public class MySpaceRender {
         checkGameOver();
         checkLevelComplete();
 
-        mConnection.sendPosition(view.getPosition()); //
+//        mConnection.sendPosition(view.getPosition()); //
 
     }
 

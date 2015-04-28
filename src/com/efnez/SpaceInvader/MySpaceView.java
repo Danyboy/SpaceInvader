@@ -20,7 +20,7 @@ public class MySpaceView extends View {
     public MySpaceView(Context context) {
         super(context);
         resources = getResources();
-        mySpaceRender = new MySpaceRender(this);
+        mySpaceRender = new MySpaceRender(this, context);
         setPosition(MenuActivity.X / 2, MenuActivity.Y / 2);
     }
 
