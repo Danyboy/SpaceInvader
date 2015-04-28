@@ -1,6 +1,12 @@
 package com.efnez.SpaceInvader;
 
 import android.graphics.*;
+import android.net.nsd.NsdManager;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.util.Pair;
+import android.view.View;
 
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -17,7 +23,7 @@ public class MySpaceRender {
     private final ConcurrentHashMap<Integer, Triangle> redBullets;
     private ConcurrentHashMap<Integer, Triangle> greenBullets;
     private ConcurrentHashMap<Integer, Triangle> deadWarriors;
-    private Triangle greenTriangle;
+    public Triangle greenTriangle;
 
     private int greenBulletQuantity = 0;
     private int warriorId = 0;
@@ -34,6 +40,11 @@ public class MySpaceRender {
     public boolean gameOver;
 
     private boolean nextLevel = false;
+
+    PlayerConnection mConnection;
+    NsdHelper mNsdHelper;
+    private Handler mUpdateHandler;
+    private GreenTriangleShip playerTriangle;
 
     public MySpaceRender(MySpaceView view) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -52,7 +63,36 @@ public class MySpaceRender {
         greenBullets = new ConcurrentHashMap<Integer, Triangle>();
         redBullets = new ConcurrentHashMap<Integer, Triangle>();
         warriors = new ConcurrentHashMap<Integer, Triangle>();
+
+        clickAdvertise(view);
+        updatePositionHandler();
     }
+
+    private void updatePositionHandler() {
+        mUpdateHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                Float x = msg.getData().getFloat("x");
+                Float y = msg.getData().getFloat("y");
+                updatePlayerPosition(x, y);
+            }
+        };
+    }
+
+    private void updatePlayerPosition(Float x, Float y) {
+        playerTriangle = new GreenTriangleShip(x, y);
+    }
+
+    public void clickAdvertise(View v) {
+        // Register service
+        if(mConnection.getLocalPort() > -1) {
+            mNsdHelper.registerService(mConnection.getLocalPort());
+        } else {
+//            Log.d(TAG, "ServerSocket isn't bound.");
+        }
+    }
+
+
 
     public void repaint(Canvas canvas) {
         this.canvas = canvas;
@@ -63,6 +103,7 @@ public class MySpaceRender {
 
         //TODO rewrite with getLevelConstant()
         drawTriangle(greenTriangle); //ship
+        drawTriangle(playerTriangle); //ship
         drawWarriors();
         moveTriangles(greenBullets, getGreenBulletSpeedByLevel());
         moveTriangles(redBullets, getRedBulletSpeedByLevel());
@@ -81,6 +122,9 @@ public class MySpaceRender {
 
         checkGameOver();
         checkLevelComplete();
+
+        mConnection.sendPosition(view.getPosition()); //
+
     }
 
     private float getRedBulletSpeedByLevel() {
