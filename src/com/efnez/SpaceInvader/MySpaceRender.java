@@ -49,11 +49,8 @@ public class MySpaceRender {
     private GreenTriangleShip playerTriangle;
 
     public MySpaceRender(MySpaceView view, Context context) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        background1 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars1, options);
-        backgroundImageSize = options.outHeight;
-        background2 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars2);
+
+        loadBitmaps();
 
         this.view = view;
         paint = new Paint();
@@ -146,6 +143,7 @@ public class MySpaceRender {
         return -5;
     }
 
+    //TODO remove Background
     private void redrawBackground() {
         int step = 3;
         if (backgroundY < 3 * backgroundImageSize - step){
@@ -155,6 +153,14 @@ public class MySpaceRender {
             backgroundY = 0;
             drawBackground(backgroundY);
         }
+    }
+
+    private void loadBitmaps() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        background1 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars1, options);
+        backgroundImageSize = options.outHeight;
+        background2 = BitmapFactory.decodeResource(MySpaceView.resources, R.drawable.stars2);
     }
 
     private void drawBitmap(Bitmap bitmap, float y){
@@ -232,28 +238,38 @@ public class MySpaceRender {
     }
 
     private void checkIntersection(){ //ConcurrentHashMap<Integer, Bullet> greenBullets, ConcurrentHashMap<Integer, Warrio>
-        for (Triangle bullet : greenBullets.values()) {
-            for (Integer id : warriors.keySet()) {
-                Triangle warrior = warriors.get(id);
-                if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
-                        bullet.getLength() / 2 + warrior.getLength() / 2){
-                    deadWarriors.put(deadWarriorId, warriors.get(id));
-                    warriors.remove(id); //TODO rewrite with iterator remove
-                    deadWarriorId++;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Triangle bullet : greenBullets.values()) {
+                    for (Integer id : warriors.keySet()) {
+                        Triangle warrior = warriors.get(id);
+                        if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
+                                bullet.getLength() / 2 + warrior.getLength() / 2) {
+                            deadWarriors.put(deadWarriorId, warriors.get(id));
+                            warriors.remove(id); //TODO rewrite with iterator remove
+                            deadWarriorId++;
+                        }
+                    }
                 }
             }
-        }
+        }).run();
     }
 
     private void checkGreenIntersection(){ //ConcurrentHashMap<Integer, Bullet> greenBullets, ConcurrentHashMap<Integer, Warrior>
-        for (Integer integer : redBullets.keySet()) {
-            Triangle bullet = redBullets.get(integer);
-            if (getDistance(bullet.x, bullet.y, greenTriangle.x, greenTriangle.y) <
-                bullet.getLength() / 2 + greenTriangle.getLength() / 2){
-                    redBullets.remove(integer);
-                    greenHit++;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for (Integer integer : redBullets.keySet()) {
+                    Triangle bullet = redBullets.get(integer);
+                    if (getDistance(bullet.x, bullet.y, greenTriangle.x, greenTriangle.y) <
+                        bullet.getLength() / 2 + greenTriangle.getLength() / 2){
+                            redBullets.remove(integer);
+                            greenHit++;
+                    }
+                }
             }
-        }
+        }).run();
     }
 
     public void addGreenBullet() {

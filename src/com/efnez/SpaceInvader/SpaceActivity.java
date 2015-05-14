@@ -38,10 +38,6 @@ public class SpaceActivity extends Activity {
 
         Intent intent = getIntent();
         mySpaceView = new MySpaceView(this);
-        //Restoring saved level
-        if (savedInstanceState != null) {
-            mySpaceView.mySpaceRender.myLevel = savedInstanceState.getInt(STATE_LEVEL);
-        }
 
         setContentView(mySpaceView);
         addEvent();
@@ -59,7 +55,7 @@ public class SpaceActivity extends Activity {
             public void run() {
 
                 isNextLevel = mySpaceView.mySpaceRender.isNextLevel();
-                if (isNextLevel){
+                if (isNextLevel){ //TODO check that work or next work
                     mySpaceView.mySpaceRender.setNextLevel(false);
                     handler.postDelayed(this, MyConstant.oneSecond * MyConstant.defaultLevelDelay);
                 }
@@ -115,7 +111,7 @@ public class SpaceActivity extends Activity {
         // this is a good place to re-allocate them.
         super.onResume();
         isPlaying = true;
-//        onCreate(null);
+//        onCreate();
 
 //        gameLoop();
     }
@@ -135,5 +131,15 @@ public class SpaceActivity extends Activity {
 
         // Always call the superclass so it can save the view hierarchy state
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        //Restoring saved level
+        if (savedInstanceState != null) {
+            mySpaceView.mySpaceRender.myLevel = savedInstanceState.getInt(STATE_LEVEL);
+        }
     }
 }
