@@ -65,19 +65,23 @@ class MenuView extends View{
 
     public MenuView(Context context, int X, int Y) {
         super(context);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-        background1 = BitmapFactory.decodeResource(getResources(), R.drawable.stars1);
+        loadBitmap();
         greenTriangle = new GreenTriangleShip(X / 2, Y - Y / 3);
         intent.putExtra("x", X);
         intent.putExtra("y", Y);
+    }
+
+    private void loadBitmap() {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        background1 = BitmapFactory.decodeResource(getResources(), R.drawable.stars1);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         if (runOnce) {
             super.onDraw(canvas);
-            canvas.drawBitmap(background1, -400, 0, greenTriangle.trianglePainter);
+//            canvas.drawBitmap(background1, -400, 0, greenTriangle.trianglePainter);
 
             canvas.drawPath(greenTriangle.drawTriangle(), greenTriangle.trianglePainter);
             canvas.drawPath(setGreenAim(MenuActivity.X / 2, MenuActivity.Y / 2), getPointer());
