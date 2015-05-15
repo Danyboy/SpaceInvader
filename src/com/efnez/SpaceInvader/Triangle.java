@@ -58,4 +58,9 @@ abstract class Triangle {
     }
 
     public abstract Path drawTriangle();
+
+    public void setCoordinates(float x, float y) {
+        this.x = x;
+        this.y = y;
+    }
 }
