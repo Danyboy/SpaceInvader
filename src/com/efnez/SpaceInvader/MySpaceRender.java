@@ -1,9 +1,13 @@
 package com.efnez.SpaceInvader;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.*;
+import android.net.nsd.NsdManager;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.util.Pair;
 import android.view.View;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -17,11 +21,9 @@ public class MySpaceRender {
     private MySpaceView view;
     private Paint paint;
 
-    private int greenBulletArraySize = 50;
-
     private final ConcurrentHashMap<Integer, Triangle> warriors;
     private final ConcurrentHashMap<Integer, Triangle> redBullets;
-    private Triangle [] greenBullets = new Triangle[greenBulletArraySize];
+    private ConcurrentHashMap<Integer, Triangle> greenBullets;
     private ConcurrentHashMap<Integer, Triangle> deadWarriors;
     public Triangle greenTriangle;
 
@@ -57,7 +59,7 @@ public class MySpaceRender {
         greenTriangle = new GreenTriangleShip(MenuActivity.X / 2, MenuActivity.Y / 2); //TODO rewrite with intent
 
         deadWarriors = new ConcurrentHashMap<Integer, Triangle>();
-//        greenBullets = new Triangle[greenBulletArraySize];
+        greenBullets = new ConcurrentHashMap<Integer, Triangle>();
         redBullets = new ConcurrentHashMap<Integer, Triangle>();
         warriors = new ConcurrentHashMap<Integer, Triangle>();
 
@@ -112,16 +114,15 @@ public class MySpaceRender {
 
         drawWarriors();
         moveTriangles(greenBullets, getGreenBulletSpeedByLevel());
-//        moveTriangles(redBullets, getRedBulletSpeedByLevel());
-//        moveTriangles(warriors, 1);
-
+        moveTriangles(redBullets, getRedBulletSpeedByLevel());
+        moveTriangles(warriors, 1);
         checkIntersection();
         checkGreenIntersection();
 
         minimizeTriangle(deadWarriors, 1);
-//        moveTriangles(deadWarriors, 0);
+        moveTriangles(deadWarriors, 0);
 
-//        addWarriors();
+        addWarriors();
 
         drawWarriorHealth();
         drawGreenHealth();
@@ -205,25 +206,19 @@ public class MySpaceRender {
         }
     }
 
-    private void moveTriangles(Triangle[] triangles, float step) {
-        for (int i = 0; i < triangles.length; i++) {
-            Triangle triangle = triangles[i];
-            if (triangle != null) { //TODO interate to current size
-                drawTriangle(triangle);
-                triangle.y += step;
-                boolean b;
-                if (!isInBorder(triangle.x, triangle.y)) {
-//                    triangles.remove(integer); // TODO check that it work
-//                    triangles[i] = null;
-                }
+    private void moveTriangles(ConcurrentHashMap<Integer, Triangle> triangles, float step) {
+        for (Integer integer : triangles.keySet()) {
+            Triangle triangle = triangles.get(integer);
+            drawTriangle(triangle);
+            triangle.y += step;
+            if (! isInBorder(triangle.x, triangle.y)){
+                triangles.remove(integer); // TODO check that it work
             }
         }
     }
 
     private void drawTriangle(Triangle triangle) {
-        if (triangle != null){
-            canvas.drawPath(triangle.drawTriangle(), triangle.trianglePainter);
-        }
+        canvas.drawPath(triangle.drawTriangle(), triangle.trianglePainter);
     }
 
     private boolean isInBorder(Float x, Float y) {
@@ -246,16 +241,14 @@ public class MySpaceRender {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (Triangle bullet : greenBullets) {
-                    if (bullet != null) {
-                        for (Integer id : warriors.keySet()) {
-                            Triangle warrior = warriors.get(id);
-                            if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
-                                    bullet.getLength() / 2 + warrior.getLength() / 2) {
-                                deadWarriors.put(deadWarriorId, warriors.get(id));
-                                warriors.remove(id); //TODO rewrite with iterator remove
-                                deadWarriorId++;
-                            }
+                for (Triangle bullet : greenBullets.values()) {
+                    for (Integer id : warriors.keySet()) {
+                        Triangle warrior = warriors.get(id);
+                        if (getDistance(bullet.x, bullet.y, warrior.x, warrior.y) <
+                                bullet.getLength() / 2 + warrior.getLength() / 2) {
+                            deadWarriors.put(deadWarriorId, warriors.get(id));
+                            warriors.remove(id); //TODO rewrite with iterator remove
+                            deadWarriorId++;
                         }
                     }
                 }
@@ -279,19 +272,8 @@ public class MySpaceRender {
         }).run();
     }
 
-    int currentGreenBulletQuantity = 0;
     public void addGreenBullet() {
-        if ( ( currentGreenBulletQuantity + 1) == greenBulletArraySize) {
-            currentGreenBulletQuantity = 0;
-        }
-        if (greenBullets [currentGreenBulletQuantity] != null){
-            greenBullets [currentGreenBulletQuantity].x = greenTriangle.x;
-            greenBullets [currentGreenBulletQuantity].y = greenTriangle.y;
-            currentGreenBulletQuantity++;
-        } else {
-            greenBullets [currentGreenBulletQuantity] = new GreenBullet(greenTriangle.x, greenTriangle.y);
-            currentGreenBulletQuantity++;
-        }
+        greenBullets.put(greenBulletQuantity++, new GreenBullet(greenTriangle.x, greenTriangle.y));
     }
 
     public void addRedBullet(Float x, Float y) {
